@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李永辉 | 营销运营 × AI Workflow</title>
+    <meta name="description" content="李永辉 - 营销运营 × AI Workflow。让 AI 真正创造业务价值。1年欧普照明上市公司实战经验。">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- 交互式背景点阵 -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav" id="mainNav">
+    <a href="#hero" class="nav-logo">李永辉</a>
+    <div class="nav-links">
+        <a href="#hero">首页</a>
+        <a href="#experience">工作经历</a>
+        <a href="#skills">技能</a>
+        <a href="#awards">荣誉</a>
+    </div>
+    <a href="javascript:void(0)" onclick="showEmailModal()" class="nav-btn">联系方式</a>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="hero">
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <div class="hero-inner wrapper">
+        <!-- Left: Brand copy -->
+        <div>
+            <div class="hero-badge hero-anim d1">
+                <span class="hero-badge-dot"></span>
+                <span>Available for Work · 西安 → 全国</span>
+            </div>
+
+            <h1 class="hero-title hero-anim d2">李永辉</h1>
+
+            <p class="hero-role hero-anim d3">
+                营销运营
+                <span class="hero-role-accent"> × </span>
+                AI Workflow
+            </p>
+
+            <p class="hero-tagline hero-anim d4">
+                让 AI 真正创造业务价值，<br>而不是停留在概念。
+            </p>
+
+            <div class="hero-ctas hero-anim d5">
+                <a href="#experience" class="btn-primary-hero">
+                    查看工作经历
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+                <a href="javascript:void(0)" onclick="showEmailModal()" class="btn-secondary-hero">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    联系方式
+                </a>
+            </div>
+
+            <div class="hero-tags">
+                <span class="hero-tag tag-edu">金融学本科</span>
+                <span class="hero-tag tag-minor">心理学辅修</span>
+                <span class="hero-tag tag-work">欧普照明</span>
+                <span class="hero-tag tag-party">中共党员</span>
+                <span class="hero-tag tag-loc">西安 · 24岁</span>
+            </div>
+        </div>
+
+        <!-- Right: Avatar -->
+        <div class="hero-avatar-wrap">
+            <img src="./assets/avatar-transparent.png" alt="李永辉">
+        </div>
+    </div>
+
+    <!-- ===================== METRICS ===================== -->
+    <div class="metrics-section wrapper" style="width: 100%; position: relative; z-index: 10;" id="metrics">
+        <div class="metrics-grid">
+            <div class="metric-card fade-up">
+                <div class="metric-num">1+</div>
+                <div class="metric-label">上市公司<br>实战经验</div>
+            </div>
+            <div class="metric-card fade-up d1">
+                <div class="metric-num">~30%</div>
+                <div class="metric-label">Q4 区域业绩<br>同比增长</div>
+            </div>
+            <div class="metric-card fade-up d2">
+                <div class="metric-num">100+</div>
+                <div class="metric-label">营销活动<br>统筹执行</div>
+            </div>
+            <div class="metric-card fade-up d3">
+                <div class="metric-num">AI</div>
+                <div class="metric-label">工作流搭建<br>赋能门店转型</div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="section-divider"></div>
+
+<!-- ===================== EXPERIENCE ===================== -->
+<section class="section" id="experience">
+    <div class="wrapper">
+        <div class="section-eyebrow">Work Experience</div>
+        <h2 class="section-h2">核心工作经历</h2>
+
+        <!-- OPPLE -->
+        <div class="exp-card fade-up">
+            <div class="exp-header">
+                <div class="exp-logo">
+                    <!-- OPPLE LOGO: We use simple SVG placeholder if real image not available -->
+                    <img src="https://logo.clearbit.com/opple.com" alt="OPPLE" onerror="this.outerHTML='<span style=\'font-size:11px;font-weight:900;color:#ff7200;letter-spacing:0.05em\'>OPPLE</span>'">
+                </div>
+                <div class="exp-meta">
+                    <div class="exp-company">欧普照明股份有限公司</div>
+                    <div class="exp-meta-row">
+                        <span class="exp-role-pill">营销运营</span>
+                        <span class="exp-company-note">2025.07 – 至今 · A股上市 · 照明行业头部 · 总部上海</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 1 -->
+            <div class="phase-block">
+                <div class="phase-header">
+                    <span class="phase-pill phase-orange">阶段一 · 业务主管</span>
+                    <span class="phase-period">2025.07 – 2025.12</span>
+                </div>
+                <div class="phase-subtitle">总部集训 → 湖南历练 → 独立操盘陕北市场</div>
+                <ul class="ach-list">
+                    <li class="ach-item">
+                        <span class="ach-dot"></span>
+                        <span>参与总部为期 1 周理论培训，<strong>获评优秀小组</strong>；完成 2 周工厂生产线实训，深入理解产品体系与技术逻辑。</span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-dot"></span>
+                        <span>赴湖南开展 4 周流通 + 零售业务轮岗，<strong>全面掌握终端业务标准流程</strong>。</span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-dot"></span>
+                        <span>分配至陕北区域，<strong>独立负责延安全域零售业务</strong>，统筹门店出货、活动落地与终端支持。</span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-dot"></span>
+                        <span><span class="ach-metric">↑ 第四季度区域业绩同比增长约 30%</span>，超额完成年度任务指标。</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Phase 2 -->
+            <div class="phase-block">
+                <div class="phase-header">
+                    <span class="phase-pill phase-green">阶段二 · 主动营销</span>
+                    <span class="phase-period">2026.01 – 至今</span>
+                </div>
+                <div class="phase-subtitle">战略转岗 → 门店动销 → 全国级 AI 项目落地</div>
+                <ul class="ach-list">
+                    <li class="ach-item">
+                        <span class="ach-dot" style="background:#059669"></span>
+                        <span>响应公司战略需求，由业务主管<strong>转岗至主动营销岗位</strong>，聚焦门店终端动销提升与全省活动统筹。</span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-dot" style="background:#059669"></span>
+                        <span>策划与执行门店营销活动；负责 315、618 等<strong>总部大促活动的区域落地</strong>，保障全链路高效推进。</span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-dot" style="background:#059669"></span>
+                        <span>深度参与全公司级<strong>「店效倍增」项目</strong>：协助门店转型升级，涵盖专业化产品讲解、品质化服务体系及<strong>数字化数据管理</strong>落地。</span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-dot" style="background:#059669"></span>
+                        <span>推动公司 <strong>AI 装修方案项目</strong>区域推广（支持风格选择、灯具更换等智能功能），赋能终端门店数字化转型。</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- HANGYIN -->
+        <div class="exp-card fade-up">
+            <div class="exp-header">
+                <div class="exp-logo">
+                    <!-- HANGYIN LOGO -->
+                    <img src="https://logo.clearbit.com/hyconsumer.com" alt="杭银" onerror="this.outerHTML='<span style=\'font-size:10px;font-weight:900;color:#dc2626;text-align:center;line-height:1.3\'>杭银<br>金融</span>'">
+                </div>
+                <div class="exp-meta">
+                    <div class="exp-company">杭银消费金融股份有限公司</div>
+                    <div class="exp-meta-row">
+                        <span class="exp-role-pill" style="background:rgba(220,38,38,0.09);color:#dc2626;border-color:rgba(220,38,38,0.18)">客户经理（实习）</span>
+                        <span class="exp-company-note">2025.01 – 02 · 杭州银行控股 · 持牌消费金融机构</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-block">
+                <ul class="ach-list">
+                    <li class="ach-item">
+                        <span class="ach-dot" style="background:#dc2626"></span>
+                        <span>驻陕西省渭南市办事处，通过<strong>电销 + 陌拜双渠道</strong>拓展客户，推广金融贷款产品，熟悉全流程业务对接。</span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-dot" style="background:#dc2626"></span>
+                        <span>协同团队跑业务、跟进回款，具备扎实的<strong>客户沟通与风险把控意识</strong>。</span>
+                    </li>
+                    <li class="ach-item">
+                        <span class="ach-dot" style="background:#dc2626"></span>
+                        <span>掌握<strong>前端获客 → 中端转化 → 后端回款</strong>完整业务闭环，适应高强度外勤节奏。</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== BENTO GRID ===================== -->
+<section class="section" id="skills">
+    <div class="wrapper">
+        <div class="bento-grid">
+
+            <!-- SKILLS (large) -->
+            <div class="bento-card bc-skills fade-up" id="skills-bento">
+                <div class="bc-label">Skills</div>
+                <div class="bc-title">技能矩阵</div>
+
+                <div class="skill-group-label">营销运营</div>
+                <div class="skill-row"><span class="skill-name">营销活动运营</span><div class="skill-track"><div class="skill-fill" style="--w:95%"></div></div><span class="skill-pct">95%</span></div>
+                <div class="skill-row"><span class="skill-name">区域零售管理</span><div class="skill-track"><div class="skill-fill" style="--w:88%"></div></div><span class="skill-pct">88%</span></div>
+                <div class="skill-row"><span class="skill-name">门店动销赋能</span><div class="skill-track"><div class="skill-fill" style="--w:85%"></div></div><span class="skill-pct">85%</span></div>
+                <div class="skill-row"><span class="skill-name">跨部门协同</span><div class="skill-track"><div class="skill-fill" style="--w:90%"></div></div><span class="skill-pct">90%</span></div>
+
+                <div class="skill-group-label" style="margin-top:24px">AI & Digital</div>
+                <div class="skill-row"><span class="skill-name">AI Workflow 搭建</span><div class="skill-track"><div class="skill-fill" style="--w:80%"></div></div><span class="skill-pct">80%</span></div>
+                <div class="skill-row"><span class="skill-name">Prompt Engineering</span><div class="skill-track"><div class="skill-fill" style="--w:78%"></div></div><span class="skill-pct">78%</span></div>
+                <div class="skill-row"><span class="skill-name">内容创作&amp;剪辑</span><div class="skill-track"><div class="skill-fill" style="--w:72%"></div></div><span class="skill-pct">72%</span></div>
+                <div class="skill-row"><span class="skill-name">数据分析执行</span><div class="skill-track"><div class="skill-fill" style="--w:70%"></div></div><span class="skill-pct">70%</span></div>
+
+                <!-- Tool Stack -->
+                <div class="tool-stack">
+                    <div class="tool-item">
+                        <div class="tool-icon-box">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/1/16/Microsoft_PowerPoint_2013-2019_logo.svg" alt="PPT" onerror="this.outerHTML='<span style=\'font-size:10px;font-weight:800;color:#d35400\'>PPT</span>'">
+                        </div>
+                        <span class="tool-name">PPT</span>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon-box">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Adobe_Photoshop_CC_icon.svg" alt="PS" onerror="this.outerHTML='<span style=\'font-size:10px;font-weight:800;color:#2980b9\'>PS</span>'">
+                        </div>
+                        <span class="tool-name">PS</span>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon-box">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Adobe_Premiere_Pro_CC_icon.svg" alt="PR" onerror="this.outerHTML='<span style=\'font-size:10px;font-weight:800;color:#8e44ad\'>PR</span>'">
+                        </div>
+                        <span class="tool-name">PR</span>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon-box">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/cb/Adobe_After_Effects_CC_icon.svg" alt="AE" onerror="this.outerHTML='<span style=\'font-size:10px;font-weight:800;color:#8e44ad\'>AE</span>'">
+                        </div>
+                        <span class="tool-name">AE</span>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon-box">
+                            <img src="https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.capcut.cn&size=128" alt="CapCut" onerror="this.outerHTML='<span style=\'font-size:10px;font-weight:800;color:#000\'>剪映</span>'">
+                        </div>
+                        <span class="tool-name">剪映</span>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon-box">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Visual_Studio_Code_1.35_icon.svg" alt="VSCode" onerror="this.outerHTML='<span style=\'font-size:10px;font-weight:800;color:#0065A9\'>VSCode</span>'">
+                        </div>
+                        <span class="tool-name">VSCode</span>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon-box">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg" alt="Gemini" onerror="this.outerHTML='<span style=\'font-size:10px;font-weight:800;color:#4F7CFF\'>Gemini</span>'">
+                        </div>
+                        <span class="tool-name">Gemini</span>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon-box">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" alt="GPT" onerror="this.outerHTML='<span style=\'font-size:10px;font-weight:800;color:#10a37f\'>GPT</span>'">
+                        </div>
+                        <span class="tool-name">ChatGPT</span>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon-box">
+                            <img src="https://cdn.simpleicons.org/anthropic/D97757" alt="Claude" onerror="this.outerHTML='<span style=\'font-size:10px;font-weight:800;color:#D97757\'>Claude</span>'">
+                        </div>
+                        <span class="tool-name">Claude</span>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon-box">
+                            <img src="https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://grok.com&size=128" alt="Grok" onerror="this.outerHTML='<span style=\'font-size:10px;font-weight:800\'>Grok</span>'">
+                        </div>
+                        <span class="tool-name">Grok</span>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon-box">
+                            <img src="https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://antigravity.google&size=128" alt="Antigravity" onerror="this.outerHTML='<span style=\'font-size:10px;font-weight:800;color:#2563eb\'>Anti</span>'">
+                        </div>
+                        <span class="tool-name">Antigravity</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EDUCATION (right) -->
+            <div class="bento-card bc-education fade-up d1">
+                <div class="bc-label">Education</div>
+                <div class="bc-title">教育背景</div>
+
+                <div class="edu-school-block">
+                    <div class="edu-name">嘉兴大学</div>
+                    <div class="edu-sub">经济学院 · 金融学 · 本科 | 2021.09 – 2025.06</div>
+                    <span class="edu-extra">+ 心理咨询微专业（辅修 2 年）</span>
+                </div>
+
+                <div class="edu-row">
+                    <span class="edu-badge badge-blue">领导力</span>
+                    <p>连续担任<strong>班级班长</strong>、青年学习社<strong>媒体部部长</strong>、<strong>辅导员助理</strong>，获评校级优秀学生干部。</p>
+                </div>
+                <div class="edu-row">
+                    <span class="edu-badge badge-purple">跨学科</span>
+                    <p>辅修心理咨询专业，构建应用心理学体系，赋能<strong>客户需求挖掘与营销转化</strong>。</p>
+                </div>
+                <div class="edu-row">
+                    <span class="edu-badge badge-green">科研</span>
+                    <p>核心参与校级 SRT 科研项目，合作发表<strong>学术论文 2 篇</strong>。</p>
+                </div>
+            </div>
+
+            <!-- AWARDS (left, large) -->
+            <div class="bento-card bc-awards fade-up" id="awards">
+                <div class="bc-label">Achievements</div>
+                <div class="bc-title">荣誉奖项</div>
+
+                <div class="award-item">
+                    <div class="award-icon">🏆</div>
+                    <div>
+                        <div class="award-title">浙江省大学生证券投资竞赛</div>
+                        <div class="award-org">团体一等奖 · 2024 · 浙江省级竞赛</div>
+                    </div>
+                </div>
+                <div class="award-item">
+                    <div class="award-icon">🥇</div>
+                    <div>
+                        <div class="award-title">"同花顺杯"全国基金组合模拟大赛</div>
+                        <div class="award-org">全国优秀奖 · 全国级金融竞赛</div>
+                    </div>
+                </div>
+                <div class="award-item">
+                    <div class="award-icon">🥈</div>
+                    <div>
+                        <div class="award-title">"杭州银行杯"浙江省金融创新大赛</div>
+                        <div class="award-org">三等奖 · 浙江省级 · 金融创新</div>
+                    </div>
+                </div>
+                <div class="award-item">
+                    <div class="award-icon">🎖️</div>
+                    <div>
+                        <div class="award-title">"上海证券杯"全国大学生 ETF 投资挑战赛</div>
+                        <div class="award-org">优胜奖 · 全国级 · ETF 投资</div>
+                    </div>
+                </div>
+                <div class="award-item">
+                    <div class="award-icon">📊</div>
+                    <div>
+                        <div class="award-title">企业经营沙盘模拟竞赛</div>
+                        <div class="award-org">校级二等奖 · 嘉兴大学</div>
+                    </div>
+                </div>
+                <div class="award-item">
+                    <div class="award-icon">📝</div>
+                    <div>
+                        <div class="award-title">校级 SRT 科研项目核心成员</div>
+                        <div class="award-org">合作发表学术论文 2 篇</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTACT (right) -->
+            <div class="bento-card bc-contact fade-up d1">
+                <div class="bc-label">Contact</div>
+                <div class="bc-title">联系方式</div>
+
+                <div class="c-link" style="cursor:default">
+                    <div class="c-link-icon">
+                        <svg width="18" height="18" fill="none" stroke="#7C8BFF" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </div>
+                    <span class="c-link-text">lyh021120@88.com</span>
+                </div>
+                <div class="c-link" style="cursor:default">
+                    <div class="c-link-icon">
+                        <svg width="18" height="18" fill="none" stroke="#7C8BFF" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                    </div>
+                    <span class="c-link-text">***********</span>
+                </div>
+                <div class="c-link" style="cursor:default">
+                    <div class="c-link-icon">
+                        <svg width="18" height="18" fill="none" stroke="#7C8BFF" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"/></svg>
+                    </div>
+                    <span class="c-link-text">陕西省西安市</span>
+                </div>
+
+                <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,0,0,0.05)">
+                    <p style="font-size:13px;line-height:1.6;color:var(--c-text-3)">
+                        积极寻求 <strong>AI 运营、AI 产品或 AI 业务赋能</strong> 等相关岗位。个人对 AI 技术抱有极高的热情，期待探索前沿技术在业务落地中的新可能，欢迎合作洽谈。
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+    © 2025 李永辉 · 营销运营 × AI Workflow · 让 AI 真正创造业务价值
+</footer>
+
+<!-- ===================== EMAIL MODAL ===================== -->
+<div id="emailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);" onclick="closeEmailModal(event)">
+    <div id="emailModalContent" class="modal-box">
+        <div style="background: rgba(0,0,0,0.03); height: 46px; border-radius: 99px; display: flex; align-items: center; gap: 10px; border: 1px solid rgba(0,0,0,0.03); flex: 1; padding: 0 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+            <svg width="16" height="16" fill="none" stroke="#64748B" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <span style="font-size:14px; color:#334155; font-family:'Inter', -apple-system, sans-serif; font-weight:600; letter-spacing:0.03em; user-select:all;">lyh021120@88.com</span>
+        </div>
+        <button id="copyBtn" onclick="copyEmail()" style="display:flex; align-items:center; justify-content:center; width:46px; height:46px; border-radius:50%; background:var(--c-primary); color:#fff; border:none; cursor:pointer; transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); flex-shrink:0;" onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 8px 24px rgba(79,124,255,0.4)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+            <svg id="copyIcon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            <svg id="checkIcon" style="display:none;" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+        </button>
+    </div>
+</div>
+
+<!-- ===================== SCRIPTS ===================== -->
+<script>
+// 1. Interactive Dot Canvas Background (Subtle)
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let width, height;
+let dots = [];
+const mouse = { x: -1000, y: -1000 };
+
+function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    initDots();
+}
+function initDots() {
+    dots = [];
+    const spacing = 40; 
+    for (let x = spacing / 2; x < width; x += spacing) {
+        for (let y = spacing / 2; y < height; y += spacing) {
+            dots.push({ x: x, y: y, originX: x, originY: y, color: 'rgba(148, 163, 184, 0.25)' });
+        }
+    }
+}
+window.addEventListener('resize', resize);
+window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+function animate() {
+    ctx.clearRect(0, 0, width, height);
+    const repelRadius = 100;
+    
+    dots.forEach(dot => {
+        let dx = mouse.x - dot.x;
+        let dy = mouse.y - dot.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+        
+        if (dist < repelRadius) {
+            let force = (repelRadius - dist) / repelRadius;
+            let angle = Math.atan2(dy, dx);
+            dot.x -= Math.cos(angle) * force * 5;
+            dot.y -= Math.sin(angle) * force * 5;
+        }
+        
+        // Return to origin
+        dot.x += (dot.originX - dot.x) * 0.1;
+        dot.y += (dot.originY - dot.y) * 0.1;
+        
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = dot.color;
+        ctx.fill();
+    });
+    
+    requestAnimationFrame(animate);
+}
+resize();
+animate();
+
+// 2. Nav scroll state
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 40) {
+        nav.classList.add('scrolled');
+    } else {
+        nav.classList.remove('scrolled');
+    }
+});
+
+// 3. Simple scroll reveal
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.classList.add('visible');
+        }
+    });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// 4. Skill bar animation
+const skillObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.querySelectorAll('.skill-fill').forEach(bar => {
+                bar.classList.add('go');
+            });
+        }
+    });
+}, { threshold: 0.2 });
+const skillsBento = document.getElementById('skills-bento');
+if(skillsBento) skillObserver.observe(skillsBento);
+
+// 5. Smooth nav link scrolling
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+
+// 6. Premium Card Spotlight Hover Effect (Glassmorphism glare)
+document.querySelectorAll('.bento-card, .exp-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+    });
+});
+
+// 7. 3D Tilt Effect for Hero Avatar
+const avatarWrap = document.querySelector('.hero-avatar-wrap');
+const avatarImg = document.querySelector('.hero-avatar-wrap img');
+
+if (avatarWrap && avatarImg) {
+    avatarWrap.addEventListener('mousemove', (e) => {
+        const rect = avatarWrap.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Calculate rotation (-10deg to 10deg) based on cursor position relative to center
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -12; 
+        const rotateY = ((x - centerX) / centerX) * 12;
+        
+        avatarImg.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
+        avatarImg.style.transition = 'none';
+    });
+    
+    avatarWrap.addEventListener('mouseleave', () => {
+        avatarImg.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        avatarImg.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    });
+}
+
+// 8. Email Modal Logic
+function showEmailModal() {
+    const modal = document.getElementById('emailModal');
+    modal.style.display = 'flex';
+    modal.classList.remove('modal-active');
+    void modal.offsetWidth; // trigger reflow
+    modal.classList.add('modal-active');
+}
+
+function closeEmailModal(e) {
+    if (e.target.id === 'emailModal') {
+        document.getElementById('emailModal').style.display = 'none';
+    }
+}
+
+function copyEmail() {
+    navigator.clipboard.writeText('lyh021120@88.com').then(() => {
+        const copyIcon = document.getElementById('copyIcon');
+        const checkIcon = document.getElementById('checkIcon');
+        const btn = document.getElementById('copyBtn');
+        
+        copyIcon.style.display = 'none';
+        checkIcon.style.display = 'block';
+        btn.style.background = '#10B981'; // Success green
+        
+        setTimeout(() => {
+            document.getElementById('emailModal').style.display = 'none';
+            setTimeout(() => { 
+                copyIcon.style.display = 'block';
+                checkIcon.style.display = 'none';
+                btn.style.background = 'var(--c-primary)';
+            }, 300);
+        }, 1500);
+    }).catch(() => {
+        alert('复制失败，请手动选取复制: lyh021120@88.com');
+    });
+}
+</script>
+
+</body>
+</html>
