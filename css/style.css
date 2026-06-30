@@ -493,11 +493,6 @@ body {
 
 @media (max-width: 1000px) {
     .orbit-badge { font-size: 10px; padding: 4px 10px; }
-    .ob-1 { top: 0; right: 0; }
-    .ob-2 { right: -5%; }
-    .ob-3 { left: -5%; }
-    .ob-4 { right: 0; bottom: 5%; }
-    .ob-5 { left: 20%; bottom: -10%; }
 }
 
 /* ====================================================
@@ -856,13 +851,42 @@ body {
     #mainNav { padding: 12px 20px; }
     
     /* Hero Section */
-    .hero { min-height: 100svh; padding: 100px 0 40px; }
+    .hero { min-height: 100svh; height: auto; max-height: none; padding: 60px 0 40px; justify-content: flex-start; }
     .hero-inner { grid-template-columns: 1fr; gap: 40px; text-align: center; }
     .hero-content { align-items: center; }
     .hero-badge, .hero-intro { margin-left: auto; margin-right: auto; }
     .hero-quote { flex-direction: column; align-items: center; text-align: center; gap: 12px; }
     .title-line-1 { font-size: 26px; }
     .title-line-2 { font-size: 34px; line-height: 1.2; }
+    
+    /* Hero Skills & CTAs */
+    .hero-skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; text-align: left; }
+    .skill-item { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 12px; }
+    .skill-icon { width: 36px; height: 36px; }
+    .hero-ctas { display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: center; width: 100%; gap: 12px; }
+    .btn-primary-hero, .btn-secondary-hero { height: 48px; padding: 0 16px; font-size: 14px; width: 100%; justify-content: center; }
+    
+    /* Hero Avatar - Scale down original desktop layout to fit mobile */
+    .hero-avatar-wrap {
+        transform: scale(0.65);
+        transform-origin: top center;
+        margin-top: 20px;
+        margin-bottom: -100px;
+    }
+    .avatar-img { border-radius: 50%; }
+    .floating-tech-card { 
+        left: -60px; 
+        width: 180px; 
+        padding: 14px; 
+    }
+    .ftc-title { font-size: 9px; margin-bottom: 12px; }
+    
+    /* Pull badges closer to the avatar to prevent horizontal screen overflow */
+    .ob-1 { right: 10%; }
+    .ob-2 { right: -2%; }
+    .ob-3 { right: 2%; }
+    .ob-4 { bottom: 0%; }
+    .ob-5 { left: 5%; }
     
     /* Bento Grid Full Width */
     .bento-grid { display: flex; flex-direction: column; gap: 16px; }
