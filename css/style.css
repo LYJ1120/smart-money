@@ -847,6 +847,9 @@ body {
     .wrapper { padding: 0 20px; }
     .section-h2 { font-size: clamp(24px, 7vw, 28px); margin-bottom: 32px; }
     
+    /* Performance: Disable expensive background blur animations on mobile */
+    .light-blue, .light-gold, .light-purple { animation: none !important; }
+    
     /* Navigation */
     .nav-links { display: none; }
     #mainNav { padding: 12px 20px; }
