@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="paper">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="about.meta.title">李永辉 | 营销实战 × AI 落地</title>
     <meta name="description" content="李永辉：金融学本科，欧普照明一线营销与商照渠道实战，自主开发并上线 AI 产品。懂业务，也能用 AI 造工具。" data-i18n-attr="content:about.meta.desc">
-    <meta name="theme-color" content="#09090b">
+    <meta name="theme-color" content="#F2EDE3">
     <meta property="og:type" content="website">
     <meta property="og:title" content="李永辉 | 营销实战 × AI 落地">
     <meta property="og:description" content="一线跑业务，用 AI 造工具。个人经历与 AI 作品集。">
@@ -15,17 +15,30 @@
     <script>
     (function () {
         var d = document.documentElement;
-        try {
-            var q = new URLSearchParams(location.search);
-            var t = q.get('theme') || localStorage.getItem('theme');
-            var l = q.get('lang') || localStorage.getItem('lang');
-            if (t === 'paper') d.setAttribute('data-theme', 'paper');
-            if (l === 'en') { d.setAttribute('lang', 'en'); d.classList.add('i18n-pending'); }
-        } catch (e) {}
+        // 默认纸墨主题；只有选过"暗夜极光"的访客才切回去
+        var apply = function () {
+            try {
+                var q = new URLSearchParams(location.search);
+                var t = q.get('theme') || localStorage.getItem('theme');
+                if (t === 'aurora') d.removeAttribute('data-theme'); else d.setAttribute('data-theme', 'paper');
+                return q.get('lang') || localStorage.getItem('lang');
+            } catch (e) { return null; }
+        };
+        if (apply() === 'en') { d.setAttribute('lang', 'en'); d.classList.add('i18n-pending'); }
+        // 从另一页切过来（含后台预渲染好的页面）：显示前按最新的主题偏好校正一次；
+        // 首屏内容直接就位，交给页面切换的淡入，不再叠加入场动画
+        addEventListener('pagereveal', function (e) {
+            if (!e.viewTransition) return;
+            apply();
+            d.classList.add('vt-arrive');
+            e.viewTransition.finished.finally(function () { d.classList.remove('vt-arrive'); });
+        });
     })();
     </script>
+    <!-- 打开页面后在后台把另一页预渲染好，点导航时直接切换，不用再等网络 -->
+    <script type="speculationrules">{"prerender": [{"urls": ["works.html"], "eagerness": "immediate"}]}</script>
     <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="assets/avatar-new.jpg" as="image">
+    <link rel="preload" href="assets/avatar-paper.jpg" as="image">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -137,8 +150,8 @@
             </svg>
             <div class="avatar-float">
                 <div class="avatar-img theme-pair" role="img" aria-label="李永辉" data-i18n-attr="aria-label:common.name">
-                    <img class="for-aurora" src="assets/avatar-new.jpg" alt="" fetchpriority="high">
-                    <img class="for-paper" src="assets/avatar-paper.jpg" alt="">
+                    <img class="for-aurora" src="assets/avatar-new.jpg" alt="">
+                    <img class="for-paper" src="assets/avatar-paper.jpg" alt="" fetchpriority="high">
                 </div>
             </div>
 

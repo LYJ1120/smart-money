@@ -306,7 +306,7 @@
             setTimeout(() => root.classList.remove('theme-fade'), 600);
             return;
         }
-        // 新主题从按钮中心以圆形扩散，像墨滴在纸上晕开
+        // 新主题从按钮中心以圆形扩散，像墨滴在纸上晕开：点下去立刻开始，先快后慢地铺满
         const r = origin.getBoundingClientRect();
         const x = r.left + r.width / 2, y = r.top + r.height / 2;
         const end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
@@ -316,7 +316,7 @@
         vt.ready.then(() => {
             root.animate(
                 { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${end}px at ${x}px ${y}px)`] },
-                { duration: 780, easing: 'cubic-bezier(0.65, 0, 0.35, 1)', pseudoElement: '::view-transition-new(root)' }
+                { duration: 680, easing: 'cubic-bezier(0.22, 0.75, 0.25, 1)', pseudoElement: '::view-transition-new(root)' }
             );
         }).catch(() => {});
         vt.finished.finally(() => { root.classList.remove('vt-theme'); switching = false; });
@@ -342,6 +342,34 @@
     } catch (e) {}
     if (lang === 'en') applyLang('en'); else syncControls();
     root.classList.remove('i18n-pending');
+
+    // 空闲时预热：另一套主题的头像提前解码、字体提前加载，第一次切换主题不卡顿
+    const idle = cb => (window.requestIdleCallback ? requestIdleCallback(cb, { timeout: 2500 }) : setTimeout(cb, 1200));
+    addEventListener('load', () => idle(() => {
+        document.querySelectorAll('.theme-pair img').forEach(img => { if (img.decode) img.decode().catch(() => {}); });
+        if (document.fonts && document.fonts.load) {
+            ['700 1em "Noto Serif SC Site"', '900 1em "Noto Serif SC Site"', '400 1em Inter', '800 1em Inter'].forEach(f => document.fonts.load(f, '李永辉 Ai').catch(() => {}));
+        }
+        // 预渲染（speculationrules）只有 Chromium 支持；其他浏览器至少把另一页预取进缓存
+        const other = document.querySelector('.nav-links a:not(.active)');
+        if (other && !(HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules'))) {
+            const l = document.createElement('link'); l.rel = 'prefetch'; l.href = other.getAttribute('href'); document.head.appendChild(l);
+        }
+    }));
+
+    // 从另一页切过来（页面可能早已在后台预渲染好）：语言按最新偏好校正；首屏里的渐显内容直接显示
+    addEventListener('pagereveal', e => {
+        if (!e.viewTransition) return;
+        let want = 'zh';
+        try { want = localStorage.getItem('lang') === 'en' ? 'en' : 'zh'; } catch (err) {}
+        if (want !== lang) applyLang(want);
+        document.dispatchEvent(new CustomEvent('themechange'));
+        syncControls();
+        document.querySelectorAll('.fade-up:not(.visible)').forEach(el => {
+            const r = el.getBoundingClientRect();
+            if (r.top < innerHeight && r.bottom > 0) { el.classList.add('visible'); revealer.unobserve(el); }
+        });
+    });
 
     /* ---------- 11. 作品页：报告自动滚动、页内试玩、宣传片 ---------- */
     const scrollers = document.querySelectorAll('.autoscroll');

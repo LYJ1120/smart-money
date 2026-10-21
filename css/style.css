@@ -297,39 +297,44 @@ strong { font-weight: 700; color: var(--text-1); }
     -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%);
     mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%);
 }
-.light-blue, .light-gold, .light-indigo { position: absolute; border-radius: 50%; }
+.light-blue, .light-gold, .light-indigo { position: absolute; border-radius: 50%; will-change: transform; }
+/* 光斑的不规则形状固定下来，动画只改 transform：模糊只算一次，之后在 GPU 上平移旋转。
+   以前逐帧改 border-radius，每帧都要重新计算 80–100px 的模糊，集显上会掉帧 */
 .light-blue {
     width: 900px; height: 900px; top: -200px; left: -100px;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
     background: radial-gradient(circle, var(--light-1) 0%, transparent 60%);
     filter: blur(80px);
     animation: aurora-1 25s ease-in-out infinite alternate;
 }
 .light-gold {
     width: 800px; height: 800px; bottom: -150px; right: 0;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
     background: radial-gradient(circle, var(--light-2) 0%, transparent 60%);
     filter: blur(80px);
     animation: aurora-2 20s ease-in-out infinite alternate-reverse;
 }
 .light-indigo {
     width: 800px; height: 800px; top: 20%; right: -100px;
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
     background: radial-gradient(circle, var(--light-3) 0%, transparent 60%);
     filter: blur(100px);
     animation: aurora-3 30s ease-in-out infinite alternate;
 }
 @keyframes aurora-1 {
-    0% { transform: translate(0, 0) scale(1) rotate(0deg); border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-    50% { transform: translate(50px, 20px) scale(1.05) rotate(45deg); border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
-    100% { transform: translate(20px, 80px) scale(1.1) rotate(90deg); border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    50% { transform: translate(50px, 20px) scale(1.05) rotate(45deg); }
+    100% { transform: translate(20px, 80px) scale(1.1) rotate(90deg); }
 }
 @keyframes aurora-2 {
-    0% { transform: translate(0, 0) scale(1) rotate(0deg); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-    50% { transform: translate(-40px, -60px) scale(1.1) rotate(-45deg); border-radius: 60% 40% 30% 70% / 50% 60% 30% 60%; }
-    100% { transform: translate(10px, -20px) scale(1) rotate(-90deg); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    50% { transform: translate(-40px, -60px) scale(1.1) rotate(-45deg); }
+    100% { transform: translate(10px, -20px) scale(1) rotate(-90deg); }
 }
 @keyframes aurora-3 {
-    0% { transform: translate(0, 0) scale(1); border-radius: 50%; }
-    50% { transform: translate(-30px, 40px) scale(1.05); border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
-    100% { transform: translate(40px, -30px) scale(1.1); border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    50% { transform: translate(-30px, 40px) scale(1.05) rotate(30deg); }
+    100% { transform: translate(40px, -30px) scale(1.1) rotate(60deg); }
 }
 
 .wrapper { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gutter); }
@@ -916,13 +921,21 @@ button.c-link { width: 100%; cursor: pointer; text-align: left; }
    ========================================================================= */
 /* 跨页面：导航保持不动，正文淡入；当前页指示器从一个标签滑到另一个 */
 @view-transition { navigation: auto; }
-::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.32s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
-::view-transition-group(nav-active) { animation-duration: 0.45s; animation-timing-function: var(--ease-out); }
+::view-transition-old(root) { animation-duration: 0.2s; animation-timing-function: cubic-bezier(0.4, 0, 1, 1); }
+::view-transition-new(root) { animation-duration: 0.34s; animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+::view-transition-group(nav-active) { animation-duration: 0.4s; animation-timing-function: var(--ease-out); }
+/* 从另一页切过来时，首屏内容直接就位，由页面切换本身的淡入来过渡，不再叠一层逐个浮现的入场动画
+   （直接打开网站时仍然有完整入场动画） */
+html.vt-arrive .hero-anim, html.vt-arrive .hero-avatar-wrap,
+html.vt-arrive .enso .stroke-main, html.vt-arrive .enso .stroke-dry, html.vt-arrive .seal { animation: none !important; opacity: 1; transform: none; }
+html.vt-arrive .seal { transform: rotate(-6deg); }
+html.vt-arrive .fade-up { transition: none !important; }
 
 /* 主题：新主题从按钮处以圆形墨晕扩散开（动画由脚本驱动） */
 html.vt-theme::view-transition-old(root),
 html.vt-theme::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 html.vt-theme::view-transition-new(root) { z-index: 2; }
+html.vt-theme *, html.vt-theme *::before, html.vt-theme *::after { transition: none !important; }
 html.vt-theme .nav, html.vt-theme .nav-links a.active,
 html.vt-lang .nav, html.vt-lang .nav-links a.active { view-transition-name: none; }
 /* 语言：整页短暂交叉淡化 */

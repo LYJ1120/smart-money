@@ -15,9 +15,11 @@
 
 ## 主题与语言
 
-- 两套主题：**暗夜极光**（默认）与**纸墨**。颜色全部是 `css/style.css` 顶部的变量，纸墨在 `:root[data-theme="paper"]` 中覆盖。新组件只用变量，两套主题自动适配。
+- 两套主题：**纸墨**（默认）与**暗夜极光**。颜色全部是 `css/style.css` 顶部的变量，纸墨在 `:root[data-theme="paper"]` 中覆盖。新组件只用变量，两套主题自动适配。默认主题写在 `<html data-theme="paper">` 上，选过暗夜极光的访客由页头脚本切回。
+- 页面切换要快：每页头部的 `<script type="speculationrules">` 会在后台预渲染另一页（Chromium 内核浏览器），点导航几乎瞬间切换；其他浏览器退化为预取。新增页面时把它加进这条规则。预渲染好的页面在显示前会按最新的主题 / 语言偏好校正（页头脚本与 `site.js` 的 `pagereveal`）。
+- 动效性能：持续播放的动画只改 `transform` / `opacity`，不要动画 `border-radius`、`filter`、尺寸这类会触发重绘的属性（极光光斑带 80px 以上的模糊，逐帧重绘会在集显上掉帧）。
 - 两种语言：中文写在 HTML 里；英文在 `js/i18n.js`，用元素上的 `data-i18n="键名"` 对应。属性（如 `aria-label`、`alt`）用 `data-i18n-attr="属性:键名"`。
-- 偏好保存在浏览器本地；链接可带参数直接指定：`?lang=en`、`?theme=paper`。
+- 偏好保存在浏览器本地；链接可带参数直接指定：`?lang=en`、`?theme=aurora`。
 
 ## 常见修改
 
