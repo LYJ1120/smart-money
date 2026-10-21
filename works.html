@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="works.meta.title">作品集 | 李永辉</title>
+    <meta name="description" content="李永辉的 AI 作品集：企业研读（AI 企业研究工具，已上线）与合成小鸡（可直接试玩的网页小游戏）。" data-i18n-attr="content:works.meta.desc">
+    <meta name="theme-color" content="#09090b">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="作品集 | 李永辉">
+    <meta property="og:description" content="从业务痛点出发，用 AI 把想法做成能上线、能用的产品。">
+    <meta property="og:image" content="https://lyj1120.github.io/smart-money/assets/og-cover.jpg">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <script>
+    (function () {
+        var d = document.documentElement;
+        try {
+            var q = new URLSearchParams(location.search);
+            var t = q.get('theme') || localStorage.getItem('theme');
+            var l = q.get('lang') || localStorage.getItem('lang');
+            if (t === 'paper') d.setAttribute('data-theme', 'paper');
+            if (l === 'en') { d.setAttribute('lang', 'en'); d.classList.add('i18n-pending'); }
+        } catch (e) {}
+    })();
+    </script>
+    <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/works.css">
+</head>
+<body class="page-works">
+
+<canvas id="bgCanvas" aria-hidden="true"></canvas>
+<div class="bg-noise" aria-hidden="true"></div>
+
+<!-- ===================== 导航 ===================== -->
+<nav class="nav" id="mainNav" aria-label="主导航" data-i18n-attr="aria-label:nav.aria">
+    <div class="nav-left">
+        <a href="index.html" class="nav-logo-wrap" aria-label="李永辉 · 关于我" data-i18n-attr="aria-label:nav.homeLabel">
+            <span class="nav-avatar theme-pair" aria-hidden="true">
+                <img class="for-aurora" src="assets/avatar-new.jpg" alt="">
+                <img class="for-paper" src="assets/avatar-paper.jpg" alt="">
+            </span>
+            <span class="nav-logo" data-i18n="common.name">李永辉</span>
+        </a>
+        <span class="nav-sep" aria-hidden="true"></span>
+        <div class="nav-links">
+            <a href="index.html" data-i18n="nav.about">关于我</a>
+            <a href="works.html" class="active" aria-current="page" data-i18n="nav.works">作品集</a>
+        </div>
+    </div>
+    <div class="nav-right">
+        <button type="button" class="nav-icon" id="themeToggle" aria-label="切换到纸墨主题" title="切换到纸墨主题">
+            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+        <button type="button" class="nav-icon nav-lang" id="langToggle" aria-label="Switch to English" title="Switch to English">EN</button>
+        <a href="#contact" class="nav-btn" data-contact data-i18n="nav.contact">联系我</a>
+    </div>
+</nav>
+
+<main>
+<!-- ===================== 页首 ===================== -->
+<header class="works-hero">
+    <div class="bg-lights" aria-hidden="true">
+        <div class="light-blue"></div>
+        <div class="light-gold"></div>
+        <div class="light-indigo"></div>
+    </div>
+    <div class="wrapper works-hero-inner">
+        <div class="section-eyebrow hero-anim">Selected Works</div>
+        <h1 class="works-title hero-anim d1" data-i18n="works.page.title">作品集</h1>
+        <p class="works-lead hero-anim d2" data-i18n="works.page.lead">从真实的痛点出发，用 AI 把想法做成<strong>能上线、能用</strong>的产品。需求、设计、取舍和验收由我负责，代码与 AI 协作完成。</p>
+        <nav class="works-index hero-anim d3" aria-label="作品目录" data-i18n-attr="aria-label:works.page.indexAria">
+            <a href="#research" class="glass lift">
+                <span class="wi-num">01</span>
+                <span><span class="wi-name" data-i18n="works.research.name">企业研读</span><span class="wi-tag" data-i18n="works.research.kind">AI 企业研究工具</span></span>
+                <svg class="wi-arrow" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m0 0l-6-6m6 6l6-6"/></svg>
+            </a>
+            <a href="#chick" class="glass lift">
+                <span class="wi-num">02</span>
+                <span><span class="wi-name" data-i18n="works.chick.name">合成小鸡</span><span class="wi-tag" data-i18n="works.chick.kind">网页休闲游戏</span></span>
+                <svg class="wi-arrow" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m0 0l-6-6m6 6l6-6"/></svg>
+            </a>
+        </nav>
+    </div>
+</header>
+
+<!-- ===================== 01 企业研读 ===================== -->
+<section class="work" id="research">
+    <div class="wrapper">
+        <div class="work-head fade-up">
+            <span class="work-num" aria-hidden="true">01</span>
+            <div>
+                <span class="pill tone-blue" data-i18n="works.research.tag">AI 研究工具 · 已上线</span>
+                <h2 class="work-title"><span data-i18n="works.research.name">企业研读</span><span class="work-en" data-i18n="works.research.alt">Company Research Desk</span></h2>
+                <p class="work-one" data-i18n="works.research.one">输入一家公司，AI 联网研读公开资料，生成带出处的结构化研究报告。</p>
+                <button type="button" class="watch-btn" data-watch="assets/video/research.mp4" data-poster="assets/video/research-poster.jpg" data-ratio="16 / 9"><span class="watch-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 001.5.86l10.5-6.5a1 1 0 000-1.72L9.5 4.64A1 1 0 008 5.5z"/></svg></span><span data-i18n="works.watch">观看宣传片</span><span class="watch-len">0:51</span></button>
+            </div>
+        </div>
+
+        <!-- 展示舞台：宣传片上线后在 data-video 填入视频路径即可替换 -->
+        <div class="work-stage research-stage glass fade-up tone-blue" data-video="" data-poster="">
+            <div class="browser browser-main">
+                <div class="browser-bar"><i></i><i></i><i></i><span class="browser-url" data-i18n="works.research.url">企业研读 · 美的集团研究报告</span></div>
+                <div class="browser-view autoscroll">
+                    <img src="assets/works/research-report-long.webp" alt="企业研读生成的美的集团研究报告" data-i18n-attr="alt:works.research.shotAlt" width="1100" height="7000" loading="lazy" decoding="async">
+                </div>
+            </div>
+            <div class="browser browser-side" aria-hidden="true">
+                <div class="browser-bar"><i></i><i></i><i></i></div>
+                <img src="assets/works/research-home.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async">
+            </div>
+            <span class="stage-caption"><span class="live-dot"></span><span data-i18n="works.research.caption">示范报告自动滚动预览 · 悬停暂停</span></span>
+        </div>
+
+        <div class="work-facts">
+            <div class="fact glass fade-up"><span class="fact-num" data-i18n="works.research.f1.num">1 个月</span><span class="fact-label" data-i18n="works.research.f1">从零到上线<br>48 次迭代提交</span></div>
+            <div class="fact glass fade-up d1"><span class="fact-num">160+</span><span class="fact-label" data-i18n="works.research.f2">自动化测试用例<br>7 轮浏览器 QA</span></div>
+            <div class="fact glass fade-up d2"><span class="fact-num" data-i18n="works.research.f3.num">5 类</span><span class="fact-label" data-i18n="works.research.f3">模型接口<br>OpenAI / Claude / 千问 / DeepSeek / 自定义</span></div>
+            <div class="fact glass fade-up d3"><span class="fact-num" data-i18n="works.research.f4.num">5 年</span><span class="fact-label" data-i18n="works.research.f4">财务趋势图<br>年报与中报分开呈现</span></div>
+        </div>
+
+        <div class="work-body">
+            <div>
+                <div class="work-block fade-up">
+                    <h3 class="work-h3" data-i18n="works.h.problem">解决什么问题</h3>
+                    <p class="work-p" data-i18n="works.research.problem">求职、谈合作或做投资前，想看清一家公司：资料散落在年报、公告和新闻里，花一晚上也拼不出全貌，还容易查错同名公司、被二手信息误导。</p>
+                </div>
+                <div class="work-block fade-up">
+                    <h3 class="work-h3" data-i18n="works.h.features">核心能力</h3>
+                    <ul class="feature-list">
+                        <li class="feature tone-blue">
+                            <span class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35M8.5 11l2 2 3.5-3.5"/></svg></span>
+                            <div><b data-i18n="works.research.feat1.t">先确认主体，再开始研究</b><p data-i18n="works.research.feat1">优先查询公开证券名称索引（6,000+ 家），重名企业由用户选定，避免研究错公司。</p></div>
+                        </li>
+                        <li class="feature tone-purple">
+                            <span class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></span>
+                            <div><b data-i18n="works.research.feat2.t">联网研究，来源可追溯</b><p data-i18n="works.research.feat2">模型按固定研究框架自主检索；事实、公司表述、计算与推演分开标注，出处随段落外链。</p></div>
+                        </li>
+                        <li class="feature tone-green">
+                            <span class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 16v-4M12 16V8M17 16v-7"/></svg></span>
+                            <div><b data-i18n="works.research.feat3.t">财务可视化，绝不编造</b><p data-i18n="works.research.feat3">近五年营收、利润、现金流趋势；每项注明年度、单位和口径，缺失数据如实标出，不补造。</p></div>
+                        </li>
+                        <li class="feature tone-gold">
+                            <span class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span>
+                            <div><b data-i18n="works.research.feat4.t">后台研究，一键导出</b><p data-i18n="works.research.feat4">研究在后台运行，可随时查看进度；报告支持图文 HTML 与 PDF 导出，手机上也能读。</p></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <div class="work-block fade-up">
+                    <h3 class="work-h3" data-i18n="works.h.process">我怎么用 AI 把它做出来</h3>
+                    <ol class="process">
+                        <li><span class="p-step">01</span><div><b data-i18n="works.research.p1.t">定义产品</b><p data-i18n="works.research.p1">先写产品方向文档和验收标准：做给谁、解决什么、哪些信息绝不能编造。</p></div></li>
+                        <li><span class="p-step">02</span><div><b data-i18n="works.research.p2.t">AI 协作编码</b><p data-i18n="works.research.p2">用 Codex 实现前后端；我负责拆需求、审方案、做取舍，让 AI 专注写代码。</p></div></li>
+                        <li><span class="p-step">03</span><div><b data-i18n="works.research.p3.t">测试与回归</b><p data-i18n="works.research.p3">每个版本跑自动化测试和浏览器截图回归，问题有记录、修复可追溯。</p></div></li>
+                        <li><span class="p-step">04</span><div><b data-i18n="works.research.p4.t">部署与迭代</b><p data-i18n="works.research.p4">部署到腾讯云轻量服务器，按真实使用反馈持续迭代。</p></div></li>
+                    </ol>
+                </div>
+                <div class="work-block fade-up">
+                    <h3 class="work-h3" data-i18n="works.h.stack">技术栈</h3>
+                    <div class="stack-chips"><span>Codex</span><span>Node.js</span><span>Responses API</span><span>Qwen · DeepSeek</span><span>Playwright</span><span data-i18n="works.research.cloud">腾讯云</span></div>
+                    <div class="work-ctas">
+                        <a class="btn-primary btn-sm" href="http://119.28.133.110/" target="_blank" rel="noopener"><span data-i18n="works.research.cta1">在线体验</span><span aria-hidden="true">↗</span></a>
+                        <a class="btn-secondary btn-sm" href="works/research/midea-report.html" target="_blank" rel="noopener"><span data-i18n="works.research.cta2">查看示范报告</span><span aria-hidden="true">↗</span></a>
+                    </div>
+                    <p class="work-note" data-i18n="works.research.note">在线版可接入你自己的模型 Key 进行实时研究；示范报告基于美的集团 2021—2025 年真实公开财报生成。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== 02 合成小鸡 ===================== -->
+<section class="work" id="chick">
+    <div class="wrapper">
+        <div class="work-head fade-up">
+            <span class="work-num" aria-hidden="true">02</span>
+            <div>
+                <span class="pill tone-gold" data-i18n="works.chick.tag">休闲小游戏 · 可直接试玩</span>
+                <h2 class="work-title"><span data-i18n="works.chick.name">合成小鸡</span><span class="work-en" data-i18n="works.chick.alt">Chick Merge</span></h2>
+                <p class="work-one" data-i18n="works.chick.one">放置 + 合成 + 重生的手机小游戏，打开浏览器就能玩。</p>
+                <button type="button" class="watch-btn" data-watch="assets/video/chick.mp4" data-poster="assets/video/chick-poster.jpg" data-ratio="9 / 16"><span class="watch-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 001.5.86l10.5-6.5a1 1 0 000-1.72L9.5 4.64A1 1 0 008 5.5z"/></svg></span><span data-i18n="works.watch">观看宣传片</span><span class="watch-len">0:21</span></button>
+            </div>
+        </div>
+
+        <!-- 展示舞台：左边可直接玩的手机，右边玩法说明与入口 -->
+        <div class="work-stage chick-stage glass fade-up tone-gold" data-video="" data-poster="">
+            <div class="chick-play">
+                <div class="phone phone-back" aria-hidden="true"><div class="phone-screen"><img src="assets/works/chick-play.webp" alt="" width="560" height="1120" loading="lazy" decoding="async"><img class="phone-alt" src="assets/works/chick-poster.webp" alt="" width="560" height="1120" loading="lazy" decoding="async"></div></div>
+                <div class="phone phone-main" id="chickPhone">
+                    <div class="phone-screen">
+                        <img src="assets/works/chick-poster.webp" alt="合成小鸡游戏首页" data-i18n-attr="alt:works.chick.shotAlt" width="560" height="1120" loading="lazy" decoding="async">
+                        <button type="button" class="play-overlay" data-play="works/chick/index.html">
+                            <span class="play-circle"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 001.5.86l10.5-6.5a1 1 0 000-1.72L9.5 4.64A1 1 0 008 5.5z"/></svg></span>
+                            <span class="play-label" data-i18n="works.chick.playHere">点击试玩</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="chick-guide">
+                <span class="guide-kicker" data-i18n="works.chick.guide.kicker">30 秒上手</span>
+                <ol class="guide-steps">
+                    <li><span>1</span><p data-i18n="works.chick.guide.1">点「召唤」得到动物</p></li>
+                    <li><span>2</span><p data-i18n="works.chick.guide.2">把两只相同的拖到一起，合成更高级的一只</p></li>
+                    <li><span>3</span><p data-i18n="works.chick.guide.3">点动物收金币；离开时它们也会自己赚</p></li>
+                </ol>
+                <div class="work-ctas">
+                    <button type="button" class="btn-primary btn-sm" data-play="works/chick/index.html"><span data-i18n="works.chick.cta1">开始试玩</span><span aria-hidden="true">▶</span></button>
+                    <a class="btn-secondary btn-sm" href="works/chick/index.html" target="_blank" rel="noopener"><span data-i18n="works.chick.cta2">全屏打开</span><span aria-hidden="true">↗</span></a>
+                </div>
+                <p class="work-note" data-i18n="works.chick.note">建议用手机打开全屏版，体验更完整；游戏进度保存在你自己的浏览器里。</p>
+            </div>
+        </div>
+
+        <div class="work-facts">
+            <div class="fact glass fade-up"><span class="fact-num">v16</span><span class="fact-label" data-i18n="works.chick.f1">当前版本<br>逐版试玩打磨</span></div>
+            <div class="fact glass fade-up d1"><span class="fact-num" data-i18n="works.chick.f2.num">14 级</span><span class="fact-label" data-i18n="works.chick.f2">动物图鉴<br>4 个主题世界</span></div>
+            <div class="fact glass fade-up d2"><span class="fact-num" data-i18n="works.chick.f3.num">7 种</span><span class="fact-label" data-i18n="works.chick.f3">每日挑战规则<br>每天随机一种</span></div>
+            <div class="fact glass fade-up d3"><span class="fact-num">0</span><span class="fact-label" data-i18n="works.chick.f4">外部依赖<br>单个 HTML 文件即可运行</span></div>
+        </div>
+
+        <div class="work-body">
+            <div>
+                <div class="work-block fade-up">
+                    <h3 class="work-h3" data-i18n="works.h.why">为什么做它</h3>
+                    <p class="work-p" data-i18n="works.chick.problem">想验证一件事：非计算机科班出身，能不能和 AI 一起，从零做出一个结构完整、让人愿意"再玩一局"的产品。它考验的不是代码，而是玩法设计、节奏把控和对细节的要求。</p>
+                </div>
+                <div class="work-block fade-up">
+                    <h3 class="work-h3" data-i18n="works.h.gameplay">核心玩法</h3>
+                    <ul class="feature-list">
+                        <li class="feature tone-gold">
+                            <span class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5L12 16.5 5.5 21l2-7.5L2 9h7z"/></svg></span>
+                            <div><b data-i18n="works.chick.feat1.t">放置 · 合成 · 重生</b><p data-i18n="works.chick.feat1">召唤动物、拖动两只相同的合成更高级的一只；重生换取永久加成，形成长期目标。</p></div>
+                        </li>
+                        <li class="feature tone-blue">
+                            <span class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+                            <div><b data-i18n="works.chick.feat2.t">每日挑战</b><p data-i18n="works.chick.feat2">每天随机一种规则：幸运日、空投潮、暴击日、加时赛……限时冲分，每天都有新鲜感。</p></div>
+                        </li>
+                        <li class="feature tone-green">
+                            <span class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+                            <div><b data-i18n="works.chick.feat3.t">离线收益与自动存档</b><p data-i18n="works.chick.feat3">离开期间动物继续赚金币，回来有"欢迎回来"结算；进度自动保存在本机。</p></div>
+                        </li>
+                        <li class="feature tone-purple">
+                            <span class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+                            <div><b data-i18n="works.chick.feat4.t">声画反馈</b><p data-i18n="works.chick.feat4">连击光效、震屏和粒子；背景音乐与音效由程序实时合成，支持手机震动与减少动效设置。</p></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <div class="work-block fade-up">
+                    <h3 class="work-h3" data-i18n="works.h.process">我怎么用 AI 把它做出来</h3>
+                    <ol class="process">
+                        <li><span class="p-step">01</span><div><b data-i18n="works.chick.p1.t">设计玩法</b><p data-i18n="works.chick.p1">先定核心循环：召唤 → 合成 → 赚钱 → 重生，再规划数值曲线和解锁节奏。</p></div></li>
+                        <li><span class="p-step">02</span><div><b data-i18n="works.chick.p2.t">对话式开发</b><p data-i18n="works.chick.p2">与 Claude 逐轮对话实现功能，我描述体验目标，AI 负责实现。</p></div></li>
+                        <li><span class="p-step">03</span><div><b data-i18n="works.chick.p3.t">试玩调优</b><p data-i18n="works.chick.p3">每个版本亲自试玩，调手感、节奏与难度，一路迭代到 v16。</p></div></li>
+                    </ol>
+                </div>
+                <div class="work-block fade-up">
+                    <h3 class="work-h3" data-i18n="works.h.stack">技术栈</h3>
+                    <div class="stack-chips"><span>Claude</span><span>HTML · CSS · JS</span><span>Canvas</span><span>Web Audio</span><span>localStorage</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== 结尾 ===================== -->
+<section class="works-outro">
+    <div class="wrapper">
+        <div class="outro-card glass fade-up" id="contact">
+            <div>
+                <h2 class="outro-title" data-i18n="works.outro.title">想聊聊这些作品，或者手上有一个需要 AI 落地的业务问题？</h2>
+                <p class="outro-sub" data-i18n="works.outro.sub">我既懂一线业务，也能把想法做成能用的工具。</p>
+            </div>
+            <div class="outro-ctas">
+                <a href="#contact" class="btn-primary btn-sm" data-contact><span data-i18n="nav.contact">联系我</span></a>
+                <a href="index.html" class="btn-secondary btn-sm"><span data-i18n="works.outro.back">回到关于我</span></a>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+
+<footer class="footer" data-i18n="common.footer">© 2026 李永辉 · 营销实战 × AI 落地 · 让 AI 真正创造业务价值</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>

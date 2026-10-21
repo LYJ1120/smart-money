@@ -1,0 +1,1288 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>合成小鸡</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>@font-face{font-family:"ZCOOL KuaiLe";src:url("zcool-kuaile.woff2") format("woff2");font-display:swap}</style>
+<style>
+/* Layout: one centered phone-width column. Stats on top, a 5x5 pen in the middle, thumb-reach buttons at the bottom. */
+:root {
+  --bg: #10282f;
+  --panel: #173a44;
+  --cell: #1d4854;
+  --cell-hi: #2c6877;
+  --ink: #f2f7f3;
+  --muted: #8db2b8;
+  --gold: #ffcf3f;
+  --gold-deep: #c98d08;
+  --good: #6be39a;
+  --bad: #ff8575;
+  --font-display: "ZCOOL KuaiLe", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-body: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color-scheme: dark;
+}
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+/* 合成特效（粒子、光圈、震屏）会飞出棋盘边缘，横向裁掉，避免出现横向滚动条 */
+html { overflow-x: hidden; }
+body { overflow-x: clip; }
+body { box-sizing: border-box; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  padding-block: 12px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-user-select: none; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.app { position: relative; max-width: 460px; margin: 0 auto; height: 100%; min-height: 520px; display: flex; flex-direction: column; gap: 10px; }
+.top { display: flex; align-items: center; justify-content: space-between; }
+h1 { font-family: var(--font-display); font-size: 28px; font-weight: 400; letter-spacing: .04em; margin: 0; color: var(--gold); }
+.chip, .link {
+  font: inherit; font-size: 13px; color: var(--muted); background: transparent;
+  border: 1px solid var(--cell-hi); border-radius: 999px; padding: 6px 12px; cursor: pointer;
+}
+.link { border: 0; text-decoration: underline; text-underline-offset: 3px; padding: 6px; }
+button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+.tools { display: flex; gap: 8px; align-items: center; }
+.chip.rebirth { color: var(--gold); border-color: var(--gold); font-variant-numeric: tabular-nums; }
+.chip.rebirth.ready { background: var(--gold); color: #10282f; font-weight: 700; animation: pulse 1s ease-in-out infinite alternate; }
+@keyframes pulse { from { transform: scale(1); } to { transform: scale(1.07); } }
+@media (prefers-reduced-motion: reduce) { .chip.rebirth.ready { animation: none; } }
+.brand { display: flex; flex-direction: column; gap: 0; min-width: 0; }
+.legacy { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.legacy b { color: var(--gold); font-weight: 600; }
+.modal { position: fixed; inset: 0; z-index: 100; background: rgba(5,14,18,.74); display: grid; place-items: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.sheet { box-sizing: border-box; width: min(100%, 420px); background: var(--panel); border: 1px solid var(--cell-hi); border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5); max-height: 100%; overflow-y: auto; }
+.sheet h2 { font-family: var(--font-display); font-weight: 400; font-size: 28px; letter-spacing: .04em; margin: 0; color: var(--gold); }
+.sheet .lines { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; font-size: 15px; line-height: 1.5; }
+.sheet .lines li { display: flex; justify-content: space-between; gap: 12px; }
+.sheet .lines li span:first-child { color: var(--muted); flex: none; }
+.sheet .lines li span:last-child { text-align: right; min-width: 0; font-variant-numeric: tabular-nums; }
+.sheet .gold { color: var(--gold); font-weight: 700; }
+.sheet .keep { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 0; }
+.sheet .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sheet .btn { min-height: 52px; align-items: center; text-align: center; }
+.hud { display: flex; flex-direction: column; gap: 6px; flex: none; }
+.hud .row1 { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: nowrap; height: 40px; }
+.hud .row2 { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: nowrap; height: 24px; }
+.hud .legacy { min-width: 0; overflow: hidden; text-overflow: ellipsis; text-align: right; }
+@media (max-width: 399px) { .legacy .wn { display: none; } }
+.dexbar { display: flex; flex-direction: column; gap: 5px; flex: none; width: 100%; box-sizing: border-box; background: var(--panel); border: 0; border-radius: 14px; padding: 6px 9px 8px; color: var(--muted); font: inherit; font-size: 11px; line-height: 1.2; cursor: pointer; text-align: left; }
+.dexhead { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
+.dexbar .cnt { white-space: nowrap; font-variant-numeric: tabular-nums; flex: none; }
+.chip.solid { background: var(--panel); color: var(--ink); border-color: var(--cell-hi); }
+.dexgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.dcard { background: var(--cell); border-radius: 12px; padding: 8px 2px; text-align: center; font-size: 12px; color: var(--muted); min-width: 0; }
+.dcard .e { display: block; font-size: 28px; line-height: 1.2; }
+.dcard .nm { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 2px; color: var(--ink); }
+.dcard .lvn { display: block; font-size: 10px; font-variant-numeric: tabular-nums; }
+.dcard.lock { opacity: .5; }
+.dcard.next { outline: 1.5px dashed var(--gold); outline-offset: -1.5px; opacity: 1; }
+.dcard.next .e { color: var(--gold); }
+.coin-box { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1 1 0; }
+.coin { display: inline-block; flex: none; width: 28px; height: 28px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff0a8, var(--gold) 55%, var(--gold-deep));
+  box-shadow: inset 0 0 0 4px rgba(0,0,0,.13); }
+.coin.sm { width: 16px; height: 16px; box-shadow: inset 0 0 0 2.5px rgba(0,0,0,.13); }
+#coins { font-family: var(--font-display); font-weight: 400; font-size: 36px; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.rate { color: var(--muted); font-size: 14px; display: flex; align-items: center; gap: 8px; flex: none; white-space: nowrap; }
+.ratebtn { font: inherit; color: var(--muted); background: none; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 4px; }
+.rate b { color: var(--good); font-weight: 600; font-variant-numeric: tabular-nums; }
+.combo { font-family: var(--font-display); color: #10282f; background: var(--gold); border-radius: 999px; padding: 2px 10px; font-size: 15px; }
+
+.dex { display: grid; grid-template-columns: repeat(14, 1fr); gap: 3px; width: 100%; }
+.slot[hidden] { display: none; }
+.slot { aspect-ratio: 1; display: grid; place-items: center; border-radius: 7px; background: var(--cell);
+  font-size: clamp(10px, calc((min(100vw, 460px) - 96px) / 14 * .74), 17px); line-height: 1; color: var(--muted); }
+.slot.lock { opacity: .5; font-size: 10px; }
+.slot.next { outline: 1.5px dashed var(--gold); outline-offset: -1.5px; color: var(--gold); }
+.slot.cur { box-shadow: inset 0 0 0 1.5px var(--good); background: var(--cell-hi); }
+.slot.flash { animation: flash .9s ease-out; }
+@keyframes flash { 0% { background: var(--gold); transform: scale(1.45); } 100% { transform: scale(1); } }
+
+.board-wrap { position: relative; flex: 1 1 0; min-height: 240px; container-type: size; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+.board-wrap::before, .board-wrap::after { content: ''; flex: 1 1 0; min-height: 0; }
+.board-wrap::after { flex-grow: 2; }
+.cstrip { position: relative; flex: none; width: 100%; height: 0; z-index: 7; }
+.stage { position: relative; flex: none; width: min(100cqw, calc(100cqh * var(--cols, 4) / var(--rows, 4))); }
+.board { width: 100%; box-sizing: border-box; display: grid; grid-template-columns: repeat(var(--cols, 4), 1fr); gap: 8px; padding: 10px; background: var(--panel);
+  border-radius: 20px; container-type: inline-size; touch-action: none; }
+.cell { position: relative; aspect-ratio: 1; border-radius: 16px; background: var(--cell); display: grid; place-items: center;
+  background-image: radial-gradient(circle at 50% 50%, var(--tint, transparent), transparent 75%); transition: box-shadow .12s; }
+.cell.over { box-shadow: inset 0 0 0 3px var(--gold); }
+.mon { font-size: 2.6rem; font-size: 14cqw; line-height: 1; pointer-events: none; margin-top: -9%; }
+.cell.drag .mon { opacity: .25; }
+.lv { position: absolute; left: 0; right: 0; bottom: 3px; text-align: center; font-size: 11px; white-space: nowrap; color: var(--muted); pointer-events: none; font-variant-numeric: tabular-nums; }
+.fx { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.float { position: absolute; transform: translate(-50%, -50%); font-family: var(--font-display); color: var(--gold); white-space: nowrap;
+  font-size: 18px; text-shadow: 0 2px 0 rgba(0,0,0,.35); }
+.float.small { font-size: 13px; color: var(--good); }
+.float.big { font-size: 26px; }
+.dot { position: absolute; width: 9px; height: 9px; border-radius: 50%; margin: -4px 0 0 -4px; }
+.ghost { position: fixed; left: 0; top: 0; z-index: 50; pointer-events: none; font-size: 3.4rem; line-height: 1;
+  filter: drop-shadow(0 8px 6px rgba(0,0,0,.4)); }
+
+.cfx { position: absolute; left: 0; right: 0; top: -50px; height: 44px; z-index: 7; display: flex; align-items: center; justify-content: center; gap: 10px; pointer-events: none; --c: #ffcf3f; }
+.cnum { font-family: var(--font-display); line-height: 1; color: var(--c); font-size: 28px; letter-spacing: .02em; display: flex; align-items: baseline; gap: 5px; white-space: nowrap;
+  text-shadow: 0 0 14px var(--c), 0 2px 0 rgba(0,0,0,.45); -webkit-text-stroke: 1.2px rgba(0,0,0,.4); paint-order: stroke fill; }
+.cnum small { font-size: .5em; -webkit-text-stroke: 0; text-shadow: 0 2px 0 rgba(0,0,0,.5); }
+.cbar { position: absolute; left: 50%; bottom: 1px; width: 132px; margin-left: -66px; height: 4px; border-radius: 4px; background: rgba(0,0,0,.38); overflow: hidden; }
+.cbar i { display: block; height: 100%; width: 100%; background: var(--c); transform-origin: left center; border-radius: 4px; }
+.cword { font-family: var(--font-display); font-size: 17px; color: #fff; white-space: nowrap; text-shadow: 0 0 10px var(--c), 0 2px 0 rgba(0,0,0,.55); }
+.cfx.lv1 { --c: #ffcf3f; } .cfx.lv2 { --c: #ff9d2e; } .cfx.lv3 { --c: #ff5d7a; } .cfx.lv4 { --c: #d27bff; } .cfx.lv5 { --c: #5fd8ff; } .cfx.lv6 { --c: #ff6bd6; }
+.cfx.lv2 .cnum { font-size: 30px; } .cfx.lv3 .cnum { font-size: 32px; } .cfx.lv4 .cnum { font-size: 34px; } .cfx.lv5 .cnum { font-size: 36px; } .cfx.lv6 .cnum { font-size: 38px; }
+.cfx.lv6 .cnum { animation: rainbow 1.2s linear infinite; }
+@keyframes rainbow { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .cfx.lv6 .cnum { animation: none; } }
+.edge { position: absolute; inset: -12px -16px; z-index: 6; pointer-events: none; opacity: 0; border-radius: 18px; }
+.ring { position: absolute; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; border: 3px solid var(--rc, #ffcf3f); pointer-events: none; }
+.sky { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: 20px; }
+.gift { position: absolute; top: 0; left: 0; z-index: 5; width: 92px; display: flex; flex-direction: column; align-items: center; gap: 0;
+  background: none; border: 0; padding: 0; cursor: pointer; touch-action: manipulation; pointer-events: auto; }
+.gift .art { display: block; width: 80px; height: 110px; transform-origin: 50% 8%; pointer-events: none;
+  animation: sway 2.2s ease-in-out infinite alternate; filter: drop-shadow(0 6px 5px rgba(0,0,0,.35)); }
+.gift .tag { margin-top: 3px; font-size: 11px; font-weight: 700; color: #10282f; background: var(--ring); border-radius: 999px; padding: 1px 9px; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,.3); }
+.gift.k-coin { --ring: #ffcf3f; } .gift.k-boost { --ring: #6be39a; } .gift.k-animal { --ring: #c79bff; }
+.gift.big .art { width: 92px; height: 126px; animation: sway 1.8s ease-in-out infinite alternate, glowf .9s ease-in-out infinite alternate; }
+@keyframes sway { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+@keyframes glowf { from { filter: drop-shadow(0 0 5px var(--ring)) drop-shadow(0 6px 5px rgba(0,0,0,.3)); } to { filter: drop-shadow(0 0 16px var(--ring)) drop-shadow(0 6px 5px rgba(0,0,0,.3)); } }
+@media (prefers-reduced-motion: reduce) { .gift .art { animation: none !important; } }
+.boost { font-family: var(--font-display); color: #10282f; background: var(--good); border-radius: 999px; padding: 2px 10px; font-size: 15px; font-variant-numeric: tabular-nums; }
+.actions { display: grid; grid-template-columns: 1.25fr 1fr; gap: 10px; }
+.btn { font: inherit; border: 0; border-radius: 18px; padding: 8px 14px; min-height: 64px; cursor: pointer; text-align: left;
+  display: flex; flex-direction: column; justify-content: center; gap: 0; line-height: 1.2; position: relative; touch-action: manipulation; }
+.btn .t { font-family: var(--font-display); font-size: 20px; letter-spacing: .04em; }
+.btn { overflow: hidden; }
+.btn .t, .btn .sub, .btn .p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.btn .sub { font-size: 11px; opacity: .8; }
+.btn .p { display: flex; align-items: center; gap: 6px; font-weight: 700; font-variant-numeric: tabular-nums; font-size: 15px; }
+.btn.main { background: var(--gold); color: #1a2a12; box-shadow: 0 5px 0 var(--gold-deep); }
+.btn.alt { background: var(--cell-hi); color: var(--ink); box-shadow: 0 5px 0 #1b4450; }
+.btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.btn.off { opacity: .5; }
+.setrow { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 15px; }
+.setrow small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+.setrow .chip { flex: none; color: var(--ink); min-width: 64px; }
+.setrow .chip[aria-pressed="true"] { background: var(--good); border-color: var(--good); color: #10282f; font-weight: 700; }
+.setrow .chip.danger { color: var(--bad); border-color: var(--bad); }
+.setrow .chip.danger.armed { background: var(--bad); color: #10282f; font-weight: 700; }
+
+.toast { position: fixed; left: 50%; bottom: calc(132px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px);
+  background: #0a1b20; border: 1px solid var(--cell-hi); color: var(--ink); padding: 10px 16px; border-radius: 14px; font-size: 14px;
+  opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; max-width: calc(100% - 32px); text-align: center; z-index: 110; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { .toast { transition: none; } .slot.flash { animation: none; } }
+
+/* 设置面板 */
+.sheet.set { gap: 10px; }
+.srow { background: var(--cell); border-radius: 16px; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
+.srow .shead { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 15px; min-height: 32px; }
+.srow .shead small { display: block; color: var(--muted); font-size: 12px; margin-top: 1px; }
+.tg { font: inherit; font-size: 13px; font-weight: 700; min-width: 60px; padding: 6px 12px; border-radius: 999px; border: 0; cursor: pointer; flex: none;
+  background: #0f2a31; color: var(--muted); box-shadow: inset 0 0 0 1.5px var(--cell-hi); }
+.tg[aria-pressed="true"] { background: var(--good); color: #10282f; box-shadow: none; }
+.rng { -webkit-appearance: none; appearance: none; width: 100%; height: 26px; margin: 0; background: transparent; cursor: pointer; --p: 50%; }
+.rng::-webkit-slider-runnable-track { height: 8px; border-radius: 6px; background: linear-gradient(90deg, var(--gold) var(--p), #0f2a31 var(--p)); }
+.rng::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -7px; border-radius: 50%; background: #fff; border: 3px solid var(--gold-deep); box-shadow: 0 2px 4px rgba(0,0,0,.4); }
+.rng::-moz-range-track { height: 8px; border-radius: 6px; background: #0f2a31; }
+.rng::-moz-range-progress { height: 8px; border-radius: 6px; background: var(--gold); }
+.rng::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 3px solid var(--gold-deep); }
+.srow.off .rng { opacity: .35; pointer-events: none; }
+.resetlink { align-self: center; font: inherit; font-size: 13px; color: var(--muted); background: none; border: 0; text-decoration: underline; text-underline-offset: 3px; padding: 6px 10px; cursor: pointer; }
+.resetlink.armed { color: var(--bad); font-weight: 700; }
+
+/* 首页 */
+.home { position: fixed; inset: 0; z-index: 90; overflow: hidden;
+  background: radial-gradient(ellipse 90% 42% at 50% 100%, rgba(255,184,77,.34), transparent 72%),
+    linear-gradient(180deg, #0a1b2c 0%, #123852 38%, #1a5560 68%, #23605a 100%); }
+.home-hills { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 34%; display: block; }
+.moon { position: absolute; top: 6%; right: 11%; width: 62px; height: 62px; border-radius: 50%;
+  background: radial-gradient(circle at 36% 34%, #fffde8, #ffeaa6 58%, #f4cd68); box-shadow: 0 0 36px 10px rgba(255,236,160,.32), 0 0 120px 40px rgba(255,236,160,.1); }
+.bubbles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.star { position: absolute; width: var(--s); height: var(--s); border-radius: 50%; background: #fff; box-shadow: 0 0 6px 1px rgba(255,255,255,.7); animation: twink 3s ease-in-out infinite; }
+@keyframes twink { 0%, 100% { opacity: .2; } 50% { opacity: 1; } }
+.drift { position: absolute; bottom: -10%; opacity: .2; font-weight: 400; animation: rise 20s linear infinite; }
+@keyframes rise { from { transform: translateY(0) rotate(-8deg); } to { transform: translateY(-125vh) rotate(8deg); } }
+.fly { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #e8ff9a; box-shadow: 0 0 10px 3px rgba(220,255,120,.7); text-decoration: none; animation: fly 7s ease-in-out infinite; }
+@keyframes fly { 0%, 100% { transform: translate(0,0); opacity: .2; } 25% { opacity: 1; } 50% { transform: translate(18px,-26px); opacity: .5; } 75% { transform: translate(-14px,-12px); opacity: 1; } }
+.home-scroll { position: absolute; inset: 0; z-index: 2; overflow-y: auto; display: flex;
+  padding: max(20px, env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) max(20px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); }
+.home-in { width: min(100%, 340px); margin: auto; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+.herd { display: flex; justify-content: center; gap: 6px; margin-bottom: 22px; }
+.herd span { font-size: 40px; line-height: 1; display: block; animation: hop 1.6s ease-in-out infinite; animation-delay: calc(var(--k) * -.28s); }
+.herd span.sil { filter: brightness(0); opacity: .35; }
+@keyframes hop { 0%, 100% { transform: translateY(0) scale(1); } 45% { transform: translateY(-14px) scale(1.06); } }
+.home-title { position: relative; margin: 6px 0 0; display: flex; justify-content: center; gap: 2px; font-family: var(--font-display); font-weight: 400; font-size: 66px; line-height: 1.05; }
+.tc { position: relative; display: inline-block; color: #3a1c00; -webkit-text-stroke: 11px #3a1c00; paint-order: stroke fill; --r: 0deg;
+  filter: drop-shadow(0 5px 0 #7a3b00) drop-shadow(0 12px 10px rgba(0,0,0,.38)); animation: wob 2.6s ease-in-out infinite; animation-delay: calc(var(--k) * -.4s); }
+.tc::after { content: attr(data-c); position: absolute; left: 0; top: 0; -webkit-text-stroke: 0; color: transparent;
+  background: linear-gradient(180deg, #fffbd0 0%, #ffe066 36%, #ffb02e 70%, #ff8a1f 100%); -webkit-background-clip: text; background-clip: text; }
+@keyframes wob { 0%, 100% { transform: translateY(0) rotate(var(--r)); } 50% { transform: translateY(-9px) rotate(calc(var(--r) * -1)); } }
+.hat { position: absolute; right: -10px; top: -30px; font-size: 38px; transform: rotate(14deg); animation: hop 1.8s ease-in-out infinite; filter: drop-shadow(0 4px 4px rgba(0,0,0,.35)); }
+.home-tag { margin-top: -2px; padding: 3px 16px; border-radius: 999px; font-size: 13px; letter-spacing: .3em; text-indent: .3em; color: #ffe9a3;
+  background: rgba(10,27,44,.55); border: 1px solid rgba(255,207,63,.55); }
+.home-card { width: 100%; box-sizing: border-box; background: rgba(8,24,29,.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); border: 1px solid rgba(141,178,184,.35); border-radius: 18px; padding: 12px 14px; font-size: 14px; line-height: 1.7; color: var(--ink); text-align: left; min-height: 48px; }
+.home-card b { color: var(--gold); font-weight: 600; }
+.home-card .row { display: flex; justify-content: space-between; gap: 12px; }
+.home-card .row span:first-child { color: var(--muted); }
+.home-card .welcome { margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(141,178,184,.4); color: var(--gold); text-align: center; }
+.home-card ol { margin: 0; padding-left: 1.4em; }
+.home-btn, .home-btn2 { box-sizing: border-box; }
+.home-btn { width: 100%; min-height: 68px; align-items: center; text-align: center; animation: pulse 1.1s ease-in-out infinite alternate; }
+.home-btn .t { font-size: 28px; letter-spacing: .14em; }
+.home-btn2 { width: 100%; min-height: 50px; align-items: center; text-align: center; }
+.home-btn2 .t { font-size: 18px; letter-spacing: .1em; }
+@media (max-height: 600px) { .herd { display: none; } .home-title { margin-top: 24px; } .home-title { font-size: 52px; } .home-in { gap: 10px; } }
+@media (prefers-reduced-motion: reduce) { .herd span, .home-btn, .tc, .hat, .star, .drift, .fly { animation: none; } }
+
+/* 通用：危险按钮 / 禁用 / 红点 */
+.btn.danger { background: var(--bad); color: #2a0d09; box-shadow: 0 5px 0 #a8473b; }
+.btn[disabled] { opacity: .5; pointer-events: none; }
+.reddot { position: absolute; top: 9px; right: 14px; width: 11px; height: 11px; border-radius: 50%; background: #ff5555; box-shadow: 0 0 0 2px rgba(0,0,0,.35); animation: pulse 1s ease-in-out infinite alternate; }
+.legacy b.low { color: var(--bad); }
+.legacy b.tm { font-family: var(--font-display); font-weight: 400; font-size: 19px; line-height: 1; font-variant-numeric: tabular-nums; vertical-align: -1px; }
+.legacy b.tm.low { animation: pulse .5s ease-in-out infinite alternate; display: inline-block; }
+/* 首页：按钮依次排列、一行信息、角落图标 */
+.home-in { gap: 12px; }
+.home-info { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: 100%; }
+.home-info span { font-size: 13px; color: #d5ecef; background: rgba(8,24,29,.5); border: 1px solid rgba(141,178,184,.3); border-radius: 999px; padding: 3px 11px; }
+.home-info b { color: var(--gold); font-weight: 600; }
+.home-btn2 { min-height: 52px; }
+.home-btn2 .sub { margin-top: 1px; }
+.iconbtn { position: absolute; top: max(14px, env(safe-area-inset-top, 0px)); left: max(14px, env(safe-area-inset-left, 0px)); z-index: 3; width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(141,178,184,.4); background: rgba(8,24,29,.5); color: var(--ink); font-size: 20px; line-height: 1; cursor: pointer; display: grid; place-items: center; padding: 0; }
+.home-ver { position: absolute; left: 0; right: 0; bottom: max(8px, env(safe-area-inset-bottom, 0px)); z-index: 3; text-align: center; font-size: 11px; color: rgba(255,255,255,.38); pointer-events: none; }
+/* 每日挑战 */
+.rulecard { display: flex; align-items: center; gap: 12px; background: var(--cell); border-radius: 16px; padding: 12px 14px; }
+.rulecard .ri { font-size: 40px; line-height: 1; flex: none; }
+.rulecard b { color: var(--gold); font-weight: 600; font-size: 17px; }
+.rulecard small { display: block; color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 2px; }
+.resbig { text-align: center; font-size: 60px; line-height: 1.1; }
+.resbig small { display: block; font-size: 16px; color: var(--ink); margin-top: 4px; }
+.resbig em { display: inline-block; font-style: normal; font-size: 13px; background: var(--gold); color: #10282f; border-radius: 999px; padding: 1px 10px; margin-left: 6px; vertical-align: middle; font-weight: 700; }
+.cd { position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; pointer-events: none; font-family: var(--font-display); font-size: 110px; color: var(--gold); text-shadow: 0 6px 0 rgba(0,0,0,.4), 0 0 40px rgba(255,207,63,.5); -webkit-text-stroke: 3px rgba(0,0,0,.35); paint-order: stroke fill; }
+.cd.go { animation: cdpop .7s ease-out; }
+@keyframes cdpop { 0% { transform: scale(2.2); opacity: 0; } 30% { transform: scale(1); opacity: 1; } 100% { transform: scale(.9); opacity: .85; } }
+@media (prefers-reduced-motion: reduce) { .cd.go, .reddot { animation: none; } }
+</style>
+
+<main class="app">
+  <header class="hud">
+    <div class="row1">
+      <div class="coin-box"><span class="coin"></span><b id="coins">0</b></div>
+      <div class="tools">
+        <button id="rebirth" class="chip rebirth" type="button" hidden>重生 +<span id="rbn">1</span>★</button>
+        <button id="settingsBtn" class="chip solid" type="button">设置</button>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="rate"><button id="rateBtn" class="ratebtn" type="button" aria-label="查看收益明细"><b id="rate">0</b> 金币/秒</button><span id="boost" class="boost" hidden></span></div>
+      <div class="legacy" id="legacy"></div>
+    </div>
+    <button id="dexBtn" class="dexbar" type="button" aria-label="打开图鉴">
+      <span class="dexhead"><span>图鉴</span><span class="cnt" id="dexCnt"></span></span>
+      <span class="dex" id="dex"></span>
+    </button>
+  </header>
+
+  <section class="board-wrap">
+    <div class="cstrip"><div class="cfx" id="cfx" hidden><div class="cnum"><span id="cn">x2</span><small>连击</small></div><div class="cword" id="cword"></div><div class="cbar"><i id="cbar"></i></div></div></div>
+    <div class="stage" id="stage">
+      <div class="board" id="board"></div>
+      <div class="fx" id="fx"></div>
+    </div>
+  </section>
+
+  <section class="actions">
+    <button id="summon" class="btn main" type="button">
+      <span class="t">召唤 <span id="sicon">🥚</span></span>
+      <span class="p"><i class="coin sm"></i><b id="scost">10</b></span>
+    </button>
+    <button id="upg" class="btn alt" type="button">
+      <span class="t">本世加成</span>
+      <span class="sub" id="uinfo"></span>
+      <span class="p"><i class="coin sm"></i><b id="ucost">120</b></span>
+    </button>
+  </section>
+
+  <div class="edge" id="edge"></div>
+</main>
+<div id="home" class="home">
+  <div class="moon" aria-hidden="true"></div>
+  <svg class="home-hills" viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 70 C70 30 150 40 220 62 S340 80 400 48 L400 200 L0 200Z" fill="#1f6b4e"/>
+    <path d="M0 112 C90 74 180 102 270 94 S370 72 400 86 L400 200 L0 200Z" fill="#17513f"/>
+    <path d="M0 152 C110 122 230 152 400 120 L400 200 L0 200Z" fill="#0f382f"/>
+  </svg>
+  <div class="bubbles" id="bubbles" aria-hidden="true"></div>
+  <div class="home-scroll"><div class="home-in">
+    <div class="herd" id="herd"></div>
+    <h1 class="home-title" aria-label="合成小鸡"><span class="tc" data-c="合" style="--k:0;--r:-4deg" aria-hidden="true">合</span><span class="tc" data-c="成" style="--k:1;--r:3deg" aria-hidden="true">成</span><span class="tc" data-c="小" style="--k:2;--r:-3deg" aria-hidden="true">小</span><span class="tc" data-c="鸡" style="--k:3;--r:4deg" aria-hidden="true">鸡</span><span class="hat" aria-hidden="true">🐥</span></h1>
+    <div class="home-tag">放置 · 合成 · 重生</div>
+    <div class="home-card" id="homeCard"></div>
+    <button id="startBtn" class="btn main home-btn" type="button"><span class="t" id="startTxt">开始游戏</span></button>
+    <button id="dailyBtn" class="btn alt home-btn2" type="button"><span class="t">每日挑战</span><span class="sub" id="dailySub"></span><i class="reddot" id="dailyDot" hidden></i></button>
+    <button id="restartBtn" class="btn alt home-btn2" type="button" hidden><span class="t">重新开始</span></button>
+    <button id="homeSet" class="btn alt home-btn2" type="button"><span class="t">设置</span></button>
+  </div></div>
+  <button id="homeSnd" class="iconbtn" type="button" aria-label="声音开关">🔊</button>
+  <div class="home-ver">v16</div>
+</div>
+<div id="rbModal" class="modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rbTitle">
+    <h2 id="rbTitle">重生</h2>
+    <ul class="lines" id="rbLines"></ul>
+    <p class="keep" id="rbKeep"></p>
+    <div class="row">
+      <button id="rbNo" class="btn alt" type="button"><span class="t">再玩一会</span></button>
+      <button id="rbYes" class="btn main" type="button"><span class="t">确认重生</span></button>
+    </div>
+  </div>
+</div>
+<div id="setModal" class="modal" hidden>
+  <div class="sheet set" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+    <h2 id="setTitle">设置</h2>
+    <div class="srow" id="rowMusic"><div class="shead"><span>🎵 音乐</span><button id="musicBtn" class="tg" type="button" aria-pressed="true">开</button></div><input id="musicVol" class="rng" type="range" min="0" max="100" step="5" aria-label="音乐音量"></div>
+    <div class="srow" id="rowSnd"><div class="shead"><span>🔊 音效</span><button id="snd" class="tg" type="button" aria-pressed="true">开</button></div><input id="sfxVol" class="rng" type="range" min="0" max="100" step="5" aria-label="音效音量"></div>
+    <div class="srow"><div class="shead"><span>✨ 特效<small>连击光效、震屏、粒子</small></span><button id="fxBtn" class="tg" type="button" aria-pressed="true">炫酷</button></div></div>
+    <div class="srow"><div class="shead"><span>📳 震动<small>合成时轻微震动（支持的手机）</small></span><button id="vibBtn" class="tg" type="button" aria-pressed="true">开</button></div></div>
+    <div class="row"><button id="homeBtn" class="btn alt" type="button"><span class="t">返回首页</span></button><button id="setOk" class="btn main" type="button"><span class="t">完成</span></button></div>
+  </div>
+</div>
+<div id="olModal" class="modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="olTitle">
+    <h2 id="olTitle">欢迎回来</h2>
+    <p class="keep">你不在的时候，动物们帮你赚了</p>
+    <div class="resbig" id="olAmt"></div>
+    <div class="row"><button id="olOk" class="btn main" type="button" style="grid-column: 1 / -1"><span class="t">领取</span></button></div>
+  </div>
+</div>
+<div id="dyModal" class="modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="dyTitle">
+    <h2 id="dyTitle">每日挑战</h2>
+    <div class="rulecard" id="dyRule"></div>
+    <ul class="lines" id="dyLines"></ul>
+    <p class="keep" id="dyNote"></p>
+    <div class="row"><button id="dyBack" class="btn alt" type="button"><span class="t">返回</span></button><button id="dyGo" class="btn main" type="button"><span class="t" id="dyGoT">开始挑战</span></button></div>
+  </div>
+</div>
+<div id="dyResult" class="modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="dyResTitle">
+    <h2 id="dyResTitle">挑战结束</h2>
+    <div class="resbig" id="dyBig"></div>
+    <ul class="lines" id="dyResLines"></ul>
+    <p class="keep" id="dyReward"></p>
+    <div class="row"><button id="dyAgain" class="btn alt" type="button"><span class="t" id="dyAgainT">再来一次</span><span class="sub" id="dyAgainS"></span></button><button id="dyExit" class="btn main" type="button"><span class="t">返回首页</span></button></div>
+  </div>
+</div>
+<div id="dexModal" class="modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="dexTitle">
+    <h2 id="dexTitle">图鉴</h2>
+    <div class="dexgrid" id="dexGrid"></div>
+    <div class="row"><button id="dexOk" class="btn main" type="button" style="grid-column: 1 / -1"><span class="t">关闭</span></button></div>
+  </div>
+</div>
+<div id="infoModal" class="modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+    <h2 id="infoTitle">收益明细</h2>
+    <ul class="lines" id="infoLines"></ul>
+    <p class="keep" id="infoNote"></p>
+    <div class="row"><button id="infoOk" class="btn main" type="button" style="grid-column: 1 / -1"><span class="t">知道了</span></button></div>
+  </div>
+</div>
+<div id="cfModal" class="modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+    <h2 id="cfTitle">确认</h2>
+    <p class="keep" id="cfText" style="font-size:15px"></p>
+    <div class="row"><button id="cfNo" class="btn alt" type="button"><span class="t">取消</span></button><button id="cfYes" class="btn main" type="button"><span class="t" id="cfYesT">确定</span></button></div>
+  </div>
+</div>
+<div id="cd" class="cd" hidden></div>
+<div id="toast" class="toast" role="status"></div>
+
+<script>
+(() => {
+  // ===== 数据 =====
+  // 每个等级的基础收益在所有世界里一样，每个世界只是换一套动物
+  const INC = [1, 3, 8, 22, 60, 160, 430, 1200, 3300, 9000, 25000, 68000, 190000, 520000];
+  const WORLDS = [
+    { name: '起源', icon: '🥚', t: [['🥚','小蛋'],['🐣','破壳雏鸟'],['🐥','小黄鸡'],['🐔','大母鸡'],['🦆','鸭鸭'],['🦜','鹦鹉'],['🦚','孔雀'],['🦅','苍鹰'],['🦁','狮王'],['🐘','巨象'],['🐋','蓝鲸'],['🦖','霸王龙'],['🐲','神龙'],['🦄','独角兽']] },
+    { name: '深海', icon: '🌊', t: [['🐚','贝壳'],['🦀','小蟹'],['🦐','小虾'],['🐟','小鱼'],['🐠','热带鱼'],['🐡','河豚'],['🦑','乌贼'],['🐙','章鱼'],['🐢','海龟'],['🦈','鲨鱼'],['🐬','海豚'],['🐳','蓝鲸'],['🔱','三叉戟'],['🧜','美人鱼']] },
+    { name: '森林', icon: '🌲', t: [['🌰','橡果'],['🌱','幼苗'],['🍄','蘑菇'],['🐛','毛毛虫'],['🦋','蝴蝶'],['🐿️','松鼠'],['🐇','兔子'],['🦊','狐狸'],['🦌','麋鹿'],['🐻','棕熊'],['🐺','灰狼'],['🦉','猫头鹰'],['🌳','古树'],['🧝','森林精灵']] },
+    { name: '星空', icon: '🌌', t: [['☄️','彗星'],['🌙','月亮'],['⭐','星星'],['🌟','耀星'],['💫','流光'],['🪐','星环行星'],['☀️','太阳'],['🚀','火箭'],['🛸','飞碟'],['🛰️','卫星'],['👽','外星人'],['🌌','银河'],['🌠','流星雨'],['🔮','宇宙之核']] }
+  ];
+  const TIERS = INC.map(inc => ({ e: '', n: '', inc: inc }));
+  const COLS = 4, ROWS = 4, N = COLS * ROWS;
+  const KEY = 'merge-chick-v2';
+  const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ===== 状态（纯数据，和画面分开，方便以后移植到小程序）=====
+  function fresh() {
+    const b = Array(N).fill(-1); b[5] = 0; b[6] = 0;
+    return { coins: 30, board: b, summons: 0, up: 0, best: 0, sound: true, playTime: 0, reach: [0], since: 0, stars: 0, rebirths: 0, dexBest: [], fastest: 0, fxLite: false, sfxVol: 0.8, musicOn: true, musicVol: 0.5, vib: true, pendingOffline: 0 };
+  }
+  const pickSet = o => ({ sound: o.sound, fxLite: o.fxLite, sfxVol: o.sfxVol, musicOn: o.musicOn, musicVol: o.musicVol, vib: o.vib });
+  function load() {
+    try {
+      const raw = localStorage.getItem(KEY); if (!raw) return null;
+      const d = JSON.parse(raw);
+      if (!d || !Array.isArray(d.board)) return null;
+      if (d.board.length !== N) {
+        // 旧版棋盘格子数不同：高级的优先留下，放不下的按价值折成金币
+        const items = d.board.filter(v => v >= 0).sort((a, b) => b - a), keep = items.slice(0, N), extra = items.slice(N);
+        d.coins = (d.coins || 0) + extra.reduce((a, t) => a + (INC[Math.min(t, INC.length - 1)] || 1) * 30, 0);
+        d.board = keep.concat(Array(N - keep.length).fill(-1));
+      }
+      if (!d.dexBest && typeof d.bestEver === 'number') d.dexBest = [d.bestEver];
+      d.dexBest = (Array.isArray(d.dexBest) ? d.dexBest : []).map(v => Math.max(0, Math.min(+v || 0, INC.length - 1)));
+      d.board = d.board.map(v => Math.min(v, INC.length - 1));
+      d.best = Math.min(d.best || 0, INC.length - 1);
+      return Object.assign(fresh(), d);
+    } catch (e) { return null; }
+  }
+  let S = load() || fresh();
+  let daily = null, mainS = null, pendingBoost = 0;   // 每日挑战进行时：daily 有值，主线存档暂存在 mainS
+  let savedAt = 0;
+  try { savedAt = +JSON.parse(localStorage.getItem(KEY) || '{}').savedAt || 0; } catch (e) {}
+  function save() {
+    if (daily) return;
+    syncDex();
+    try { S.savedAt = Date.now(); localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+  }
+
+  // ===== 随机数：每日挑战里，同一天所有人的“运气序列”相同 =====
+  const hash32 = str => { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+  const mulberry = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const R = name => { if (!daily) return Math.random(); const f = daily.streams[name] || (daily.streams[name] = mulberry(hash32(daily.key + '|' + name))); return f(); };
+  // 每天一条规则（按北京时间的星期轮换），只在每日挑战里生效
+  const DAILY_RULES = [
+    { icon: '⚖️', name: '标准日', desc: '没有特殊规则，纯拼手速。' },
+    { icon: '🍀', name: '幸运日', desc: '召唤时有 35% 的几率直接出高一级的动物。', luck: 0.35 },
+    { icon: '🎁', name: '空投潮', desc: '每隔十几秒就有一个动物空投，抓紧点。', giftEvery: [12, 16] },
+    { icon: '🎒', name: '先发优势', desc: '开局棚里就有 4 对 Lv3 动物。', start: 3 },
+    { icon: '👯', name: '双胞胎日', desc: '每次召唤出两只相同的动物，只收一只的钱。', twin: true },
+    { icon: '⚡', name: '暴击日', desc: '每次合成有 20% 的几率直接多升一级。', crit: 0.2 },
+    { icon: '⏱', name: '加时赛', desc: '挑战时间延长到 4 分钟。', dur: 240 }
+  ];
+  const MAX_TRIES = 3, DKEY = 'merge-chick-daily-v1';
+  const dayKeyNow = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
+  const dayInfo = key => { const ms = Date.parse(key + 'T00:00:00Z'); return { num: Math.floor(ms / 864e5), wd: new Date(ms).getUTCDay() }; };
+  let D = { day: '', tries: 0, best: null, claimed: false, ever: null };
+  function loadD() {
+    try { const d = JSON.parse(localStorage.getItem(DKEY) || 'null'); if (d && typeof d === 'object') D = Object.assign(D, d); } catch (e) {}
+    const k = dayKeyNow(); if (D.day !== k) { D.day = k; D.tries = 0; D.best = null; D.claimed = false; }
+    return D;
+  }
+  function saveD() { try { localStorage.setItem(DKEY, JSON.stringify(D)); } catch (e) {} }
+
+  // ===== 规则 =====
+  const upMult = () => 1 + 0.25 * S.up;
+  const starMult = () => 1 + 0.5 * S.stars;
+  const mult = () => upMult() * starMult();
+  // 每重生一次多解锁 2 级动物，最多 18 级
+  const worldIdx = () => S.rebirths % WORLDS.length;
+  const world = () => WORLDS[worldIdx()];
+  function applyWorld() { world().t.forEach((x, i) => { TIERS[i].e = x[0]; TIERS[i].n = x[1]; }); }
+  const dexBest = () => Math.max(0, Math.min(S.dexBest[worldIdx()] || 0, INC.length - 1));
+  function syncDex() { const w = worldIdx(); S.dexBest[w] = Math.max(S.dexBest[w] || 0, S.best); }
+  const tierCap = () => TIERS.length;
+  const topTier = () => TIERS.length - 1;
+  // 召唤出的动物比当前最高级低几级：主线 6 级起步，每攒 10 颗★近一级，最少 3 级；每日挑战固定 5 级
+  const gapOf = stars => daily ? 5 : Math.max(3, 6 - Math.floor(stars / 10));
+  const REBIRTH_MIN = 9;
+  const rebirthGain = () => Math.max(1, S.best - 8);
+  let boostUntil = 0;
+  const boosted = () => performance.now() < boostUntil;
+  const incOf = t => TIERS[t].inc * mult() * (boosted() ? 2 : 1);
+  const fmtTime = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+  const income = () => S.board.reduce((a, t) => a + (t >= 0 ? incOf(t) : 0), 0);
+  const baseTier = () => Math.max(0, S.best - gapOf(S.stars));
+  const cnt = x => S.board.filter(v => v === x).length;
+  // 召唤规则：比基础召唤等级低、且场上数量为单数的动物，会先被补成双数，
+  // 补齐之前召唤出的就是那个等级（最低的优先）；没有落单了，才召唤基础等级。
+  const loneTiers = () => { const out = [], b = baseTier(); for (let x = 0; x < b; x++) if (cnt(x) % 2 === 1) out.push(x); return out; };
+  const spawnTier = () => { const l = loneTiers(); return l.length ? l[0] : baseTier(); };
+  const baseCost = () => Math.floor(TIERS[baseTier()].inc * 10 * Math.pow(1.8, Math.max(0, S.best - 3)) * Math.pow(1.08, S.since));
+  // 补齐用的低级动物按价值折价，不会让人花高价买只小蛋
+  const summonCost = () => { const sp = spawnTier(), b = baseTier(), c = baseCost(); return sp === b ? c : Math.max(1, Math.floor(c * TIERS[sp].inc / TIERS[b].inc)); };
+  const upCost = () => Math.floor(120 * Math.pow(1.75, S.up));
+
+  function fmt(n) {
+    n = Math.floor(n);
+    if (n < 10000) return String(n);
+    if (n < 1e8) return (n / 1e4).toFixed(n < 1e5 ? 2 : 1) + '万';
+    if (n < 1e12) return (n / 1e8).toFixed(2) + '亿';
+    return (n / 1e12).toFixed(2) + '兆';
+  }
+  const tint = t => (t * 37 + 30) % 360;
+
+  // ===== DOM =====
+  const $ = s => document.querySelector(s);
+  const boardEl = $('#board'), fx = $('#fx'), dexEl = $('#dex'), homeEl = $('#home');
+  const coinsEl = $('#coins'), rateEl = $('#rate');
+  const stageEl = $('#stage'); stageEl.style.setProperty('--cols', COLS); stageEl.style.setProperty('--rows', ROWS);
+  const summonBtn = $('#summon'), upgBtn = $('#upg');
+  const cells = [];
+  for (let i = 0; i < N; i++) {
+    const d = document.createElement('div');
+    d.className = 'cell'; d.dataset.i = i;
+    d.innerHTML = '<span class="mon"></span><span class="lv"></span>';
+    boardEl.appendChild(d); cells.push(d);
+  }
+
+  const slots = TIERS.map(() => { const d = document.createElement('div'); d.className = 'slot'; dexEl.appendChild(d); return d; });
+  const lvText = t => t < 0 ? '' : fmt(TIERS[t].inc * mult()) + '/秒';
+  function renderCell(i) {
+    const t = S.board[i], c = cells[i];
+    c.querySelector('.mon').textContent = t < 0 ? '' : TIERS[t].e;
+    c.querySelector('.lv').textContent = lvText(t); c._lv = lvText(t);
+    c.style.setProperty('--tint', t < 0 ? 'transparent' : 'hsl(' + tint(t) + ' 75% 55% / .32)');
+    c.setAttribute('aria-label', t < 0 ? '空位' : TIERS[t].n + '，Lv' + (t + 1));
+  }
+  function renderDex() {
+    const known = Math.max(dexBest(), S.best), cap = tierCap();
+    dexEl.style.gridTemplateColumns = 'repeat(' + cap + ', 1fr)';
+    slots.forEach((el, t) => {
+      const got = t <= known;
+      el.className = 'slot' + (got ? '' : (t === known + 1 ? ' next' : ' lock')) + (got && t === S.best ? ' cur' : '');
+      el.textContent = got ? TIERS[t].e : '?';
+    });
+    $('#dexCnt').textContent = (known + 1) + '/' + cap + ' ›';
+  }
+  function flashDex() {
+    if (REDUCE) return;
+    const el = slots[S.best]; if (!el) return;
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+    setTimeout(() => el.classList.remove('flash'), 950);
+  }
+  const dexModal = $('#dexModal');
+  function openDex() {
+    const known = Math.max(dexBest(), S.best), cap = tierCap();
+    $('#dexTitle').textContent = '图鉴 · ' + world().icon + world().name + ' ' + (known + 1) + '/' + cap;
+    $('#dexGrid').innerHTML = TIERS.map((x, t) => {
+      const got = t <= known, next = t === known + 1;
+      return '<div class="dcard' + (got ? '' : next ? ' next' : ' lock') + '"><span class="e">' + (got ? x.e : '?') + '</span><span class="nm">' + (got ? x.n : '???') + '</span><span class="lvn">Lv' + (t + 1) + '</span></div>';
+    }).join('');
+    dexModal.hidden = false; $('#dexOk').focus();
+  }
+  function closeDex() { dexModal.hidden = true; }
+  function renderAll() {
+    for (let i = 0; i < N; i++) renderCell(i);
+    renderDex(); renderHud(true);
+  }
+  function renderHud(force) {
+    const ctxt = fmt(S.coins);
+    coinsEl.textContent = ctxt;
+    coinsEl.style.fontSize = ctxt.length > 7 ? '22px' : ctxt.length > 5 ? '30px' : '';
+    rateEl.textContent = fmt(income());
+    const left = Math.ceil((boostUntil - performance.now()) / 1000);
+    if (left > 0) { $('#boost').hidden = false; $('#boost').textContent = '双倍 ' + left + '秒'; }
+    else $('#boost').hidden = true;
+    const sc = summonCost(), uc = upCost();
+    $('#scost').textContent = fmt(sc);
+    $('#sicon').textContent = TIERS[spawnTier()].e;
+    $('#ucost').textContent = fmt(uc);
+    $('#uinfo').textContent = '当前 x' + upMult().toFixed(2) + ' → x' + (upMult() + 0.25).toFixed(2);
+    const rb = $('#rebirth'), canRb = S.best >= REBIRTH_MIN && !daily;
+    rb.hidden = !canRb;
+    if (canRb) { $('#rbn').textContent = rebirthGain(); rb.classList.toggle('ready', S.best >= topTier()); }
+    if (daily) {
+      const left = Math.max(0, Math.ceil(daily.dur - S.playTime));
+      $('#legacy').innerHTML = '<b class="tm ' + (left <= 10 && daily.running ? 'low' : '') + '">⏱ ' + fmtTime(left) + '</b> · ' + daily.rule.icon + '<span class="wn">' + daily.rule.name + '</span>';
+    } else $('#legacy').innerHTML = '第 ' + (S.rebirths + 1) + ' 世 · ' + world().icon + '<span class="wn">' + world().name + '</span>' + (S.stars > 0 ? ' · <b>★' + S.stars + '</b>' : '');
+    for (let i = 0; i < N; i++) { const t = S.board[i], c = cells[i], txt = lvText(t); if (c._lv !== txt) { c.querySelector('.lv').textContent = txt; c._lv = txt; } }
+    summonBtn.classList.toggle('off', S.coins < sc);
+    upgBtn.classList.toggle('off', S.coins < uc);
+  }
+
+  // ===== 重生 =====
+  const modal = $('#rbModal');
+  function openRebirth() {
+    if (daily || S.best < REBIRTH_MIN) return;
+    const gain = rebirthGain(), newStars = S.stars + gain, nw = WORLDS[(S.rebirths + 1) % WORLDS.length];
+    const lines = [
+      ['这一世最高', TIERS[S.best].e + ' ' + TIERS[S.best].n],
+      ['获得', '<span class="gold">+' + gain + ' ★</span>（累计 ' + newStars + ' ★）'],
+      ['永久加成', 'x' + starMult().toFixed(2) + ' → <span class="gold">x' + (1 + 0.5 * newStars).toFixed(2) + '</span>'],
+      ['下一世', nw.icon + ' ' + nw.name + '，全新的 14 种动物']
+    ];
+    if (gapOf(newStars) < gapOf(S.stars)) lines.push(['召唤动物', '更接近最高级（差距 ' + gapOf(S.stars) + ' → ' + gapOf(newStars) + ' 级）']);
+    if (S.best < topTier()) lines.push(['提醒', '还没到最高等级，再往上合成能多拿 ★']);
+    $('#rbLines').innerHTML = lines.map(l => '<li><span>' + l[0] + '</span><span>' + l[1] + '</span></li>').join('');
+    $('#rbKeep').textContent = '保留：各世界的图鉴、★、永久加成。清零：金币、棚子里的动物、本世加成。';
+    modal.hidden = false; $('#rbYes').focus();
+  }
+  function closeRebirth() { modal.hidden = true; }
+  function doRebirth() {
+    if (S.best < REBIRTH_MIN) { closeRebirth(); return; }
+    const gain = rebirthGain();
+    syncDex();
+    const keep = { stars: S.stars + gain, rebirths: S.rebirths + 1, dexBest: S.dexBest, sound: S.sound, fxLite: S.fxLite, sfxVol: S.sfxVol, musicOn: S.musicOn, musicVol: S.musicVol, vib: S.vib,
+      fastest: (S.best >= topTier() && (!S.fastest || S.playTime < S.fastest)) ? S.playTime : S.fastest };
+    boostUntil = 0; resetCombo();
+    S = Object.assign(fresh(), keep);
+    applyWorld();
+    closeRebirth(); renderAll(); renderSet(); save(); sfx.unlock();
+    toast('重生成功，进入 ' + world().icon + world().name + '，永久加成 x' + starMult().toFixed(2), 3200);
+  }
+  $('#rebirth').addEventListener('click', () => { ac(); openRebirth(); });
+  $('#rbNo').addEventListener('click', closeRebirth);
+  $('#rbYes').addEventListener('click', doRebirth);
+  modal.addEventListener('pointerdown', e => { if (e.target === modal) closeRebirth(); });
+
+  // ===== 收益明细 =====
+  const infoModal = $('#infoModal');
+  function openInfo() {
+    let base = 0; S.board.forEach(t => { if (t >= 0) base += TIERS[t].inc; });
+    const lines = [
+      ['棚子里动物的基础收益合计', fmt(base) + '/秒'],
+      ['× 本世加成（下面按钮买的）', 'x' + upMult().toFixed(2)],
+      ['× 永久加成（★' + S.stars + ' × 50%）', 'x' + starMult().toFixed(2)]
+    ];
+    if (boosted()) lines.push(['× 双倍空投', 'x2']);
+    lines.push(['= 每秒金币', '<span class="gold">' + fmt(income()) + '</span>']);
+    $('#infoLines').innerHTML = lines.map(l => '<li><span>' + l[0] + '</span><span>' + l[1] + '</span></li>').join('');
+    $('#infoNote').textContent = '每格下方的数字，是那只动物每秒赚的金币（已含加成）。点一下动物，立刻收到它 3 秒的收益。本世加成在重生时清零，永久加成不会。';
+    infoModal.hidden = false; $('#infoOk').focus();
+  }
+  function closeInfo() { infoModal.hidden = true; }
+  $('#rateBtn').addEventListener('click', openInfo);
+  $('#infoOk').addEventListener('click', closeInfo);
+  infoModal.addEventListener('pointerdown', e => { if (e.target === infoModal) closeInfo(); });
+  $('#dexBtn').addEventListener('click', openDex);
+  $('#dexOk').addEventListener('click', closeDex);
+  dexModal.addEventListener('pointerdown', e => { if (e.target === dexModal) closeDex(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (!cfModal.hidden) closeConfirm(); else { closeRebirth(); closeInfo(); closeSettings(); closeDex(); closeDailyIntro(); } } });
+
+  // ===== 提示 =====
+  let toastTimer = 0;
+  function toast(msg, ms) {
+    const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), ms || 1600);
+  }
+
+  // ===== 音效 =====
+  let AC = null;
+  function ac() {
+    if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+    if (AC && AC.state === 'suspended') AC.resume().catch(() => {});
+    return AC;
+  }
+  function tone(f, d, type, vol, when) {
+    if (!S.sound) return; const c = ac(); if (!c) return;
+    vol = (vol || 0.12) * (S.sfxVol == null ? 1 : S.sfxVol / 0.8);
+    const o = c.createOscillator(), g = c.createGain(), t = c.currentTime + (when || 0);
+    o.type = type || 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(vol || 0.12, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + d + 0.02);
+  }
+  // ===== 背景音乐：柔和的合成循环 =====
+  // 钢片琴旋律（稀疏）+ 和弦垫音 + 低音 + 回声。8 小节一个循环：C - Am - F - G - C - Em - F - G，每小节 8 拍
+  const BGM_STEP = 0.375;
+  const CHORDS = [[0, 4, 7, 11], [-3, 0, 4, 7], [-7, -3, 0, 4], [-5, -1, 2, 4], [0, 4, 7, 11], [-8, -5, -1, 2], [-7, -3, 0, 4], [-5, -1, 2, 4]];
+  const BGM_MEL = [
+    [[0, 12], [2, 16], [4, 19], [6, 16]], [[0, 16], [3, 19], [4, 16], [6, 12]], [[0, 12], [2, 16], [5, 17], [6, 16]], [[0, 14], [2, 19], [4, 16], [6, 14]],
+    [[0, 16], [3, 19], [4, 21], [6, 19]], [[0, 19], [2, 16], [4, 14], [6, 16]], [[0, 17], [2, 16], [4, 12], [6, 16]], [[0, 14], [2, 16], [4, 19]]
+  ];
+  function makeBgmBus(c) {
+    const master = c.createGain(), bus = c.createGain(), dly = c.createDelay(1), fb = c.createGain(), lp = c.createBiquadFilter(), wet = c.createGain();
+    master.gain.value = 0; dly.delayTime.value = BGM_STEP * 2; fb.gain.value = 0.34; lp.type = 'lowpass'; lp.frequency.value = 2200; wet.gain.value = 0.42;
+    bus.connect(master); bus.connect(dly); dly.connect(lp); lp.connect(fb); fb.connect(dly); lp.connect(wet); wet.connect(master); master.connect(c.destination);
+    return { master: master, bus: bus };
+  }
+  function bgmOsc(c, bus, type, f, t, d, peak, attack, detune) {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.value = f; if (detune) o.detune.value = detune;
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + attack); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(g); g.connect(bus); o.start(t); o.stop(t + d + 0.05);
+  }
+  function bgmPlayStep(c, bus, step, t) {
+    const bar = Math.floor(step / 8) % 8, k = step % 8, ch = CHORDS[bar];
+    if (k === 0) ch.forEach(sm => { bgmOsc(c, bus, 'sine', note(sm), t, 3.2, 0.05, 0.7, -5); bgmOsc(c, bus, 'sine', note(sm), t, 3.2, 0.05, 0.7, 5); });
+    if (k === 0 || k === 4) bgmOsc(c, bus, 'sine', note(ch[0] - 12), t, 1.5, k === 0 ? 0.34 : 0.22, 0.02);
+    BGM_MEL[bar].forEach(m => { if (m[0] === k) { bgmOsc(c, bus, 'sine', note(m[1]), t, 1.3, 0.42, 0.006); bgmOsc(c, bus, 'sine', note(m[1]) * 2, t, 0.45, 0.1, 0.006); } });
+  }
+  let bgmTimer = 0, bgmNext = 0, bgmStep = 0, bgmGain = null, bgmBus = null;
+  function bgmTick() {
+    if (!AC || !bgmBus) return;
+    if (bgmNext < AC.currentTime - 0.4) bgmNext = AC.currentTime + 0.05;
+    while (bgmNext < AC.currentTime + 0.35) { bgmPlayStep(AC, bgmBus, bgmStep, bgmNext); bgmNext += BGM_STEP; bgmStep++; }
+  }
+  function bgmSync() {
+    const want = S.musicOn && S.musicVol > 0 && !document.hidden;
+    if (want) {
+      const c = ac(); if (!c) return;
+      if (!bgmGain) { const b = makeBgmBus(c); bgmGain = b.master; bgmBus = b.bus; }
+      bgmGain.gain.setTargetAtTime(S.musicVol * 0.5, c.currentTime, 0.05);
+      if (!bgmTimer) { bgmNext = c.currentTime + 0.1; bgmTimer = setInterval(bgmTick, 120); }
+    } else {
+      if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = 0; }
+      if (bgmGain && AC) bgmGain.gain.setTargetAtTime(0, AC.currentTime, 0.05);
+    }
+  }
+  // 浏览器要求先有一次点击才能出声：第一次点击/按键后自动开始放音乐
+  ['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => { if (S.musicOn && !bgmTimer) bgmSync(); }, true));
+  const vib = pat => { if (S.vib && navigator.vibrate) { try { navigator.vibrate(pat); } catch (e) {} } };
+  const SEMI = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24, 26, 28, 31, 33, 36, 38, 40];
+  const note = s => 261.63 * Math.pow(2, s / 12);
+  const sfx = {
+    merge(t, c) { const up = Math.min((c || 1) - 1, 12), n = Math.min(SEMI[t] + up, 42);
+      tone(note(n), 0.24, 'triangle', 0.14); tone(note(n + 12), 0.34, 'sine', 0.08, 0.07);
+      if (c >= 3) tone(note(n + 19), 0.2, 'sine', 0.05, 0.12); },
+    combo(c) { const n = c >= 20 ? 6 : c >= 12 ? 5 : c >= 8 ? 4 : c >= 5 ? 3 : 2;
+      [0, 4, 7, 12, 16, 19, 24].slice(0, n + 2).forEach((x, k) => tone(note(x + 12), 0.16, 'triangle', 0.09, k * 0.055)); },
+    summon() { tone(520, 0.08, 'square', 0.05); tone(780, 0.1, 'square', 0.04, 0.05); },
+    tap() { tone(900, 0.05, 'sine', 0.06); },
+    move() { tone(330, 0.05, 'sine', 0.05); },
+    bad() { tone(150, 0.14, 'square', 0.06); },
+    up() { [0, 4, 7, 12].forEach((s, k) => tone(note(s + 12), 0.18, 'triangle', 0.1, k * 0.07)); },
+    unlock() { [0, 4, 7, 12, 16].forEach((s, k) => tone(note(s + 12), 0.22, 'triangle', 0.1, k * 0.08)); }
+  };
+
+  // ===== 特效 =====
+  function center(i) {
+    const a = cells[i].getBoundingClientRect(), b = fx.getBoundingClientRect();
+    return { x: a.left - b.left + a.width / 2, y: a.top - b.top + a.height / 2 };
+  }
+  function pop(i) {
+    if (REDUCE) return;
+    cells[i].querySelector('.mon').animate(
+      [{ transform: 'scale(.3)' }, { transform: 'scale(1.3)' }, { transform: 'scale(1)' }],
+      { duration: 320, easing: 'ease-out' });
+  }
+  function floatText(i, text, cls) {
+    const p = center(i), el = document.createElement('span');
+    el.className = 'float ' + (cls || ''); el.textContent = text;
+    el.style.left = p.x + 'px'; el.style.top = (p.y - 14) + 'px';
+    fx.appendChild(el);
+    const done = () => el.remove();
+    if (REDUCE) { setTimeout(done, 700); return; }
+    el.animate([{ transform: 'translate(-50%,-50%)', opacity: 1 }, { transform: 'translate(-50%,-90px)', opacity: 0 }],
+      { duration: 900, easing: 'ease-out' }).onfinish = done;
+  }
+  const COMBO_COLORS = ['#ffcf3f', '#ffcf3f', '#ff9d2e', '#ff5d7a', '#d27bff', '#5fd8ff', '#ff6bd6'];
+  function ring(i, lv) {
+    if (REDUCE || S.fxLite) return;
+    const p = center(i), el = document.createElement('i'); el.className = 'ring';
+    el.style.left = p.x + 'px'; el.style.top = p.y + 'px'; el.style.setProperty('--rc', COMBO_COLORS[lv]);
+    fx.appendChild(el);
+    el.animate([{ transform: 'scale(.3)', opacity: .95 }, { transform: 'scale(' + (2.6 + lv * 0.5) + ')', opacity: 0 }], { duration: 520, easing: 'ease-out' }).onfinish = () => el.remove();
+  }
+  function burst(i, t, c) {
+    if (REDUCE) return;
+    const p = center(i), n = Math.round((12 + Math.min(t, 8) * 2 + Math.min(c || 1, 15) * 2) * (S.fxLite ? .4 : 1));
+    for (let k = 0; k < n; k++) {
+      const d = document.createElement('i'); d.className = 'dot';
+      d.style.left = p.x + 'px'; d.style.top = p.y + 'px';
+      d.style.background = k % 3 === 0 ? COMBO_COLORS[comboLevel(c || 1)] : 'hsl(' + tint(t) + ' 85% 62%)';
+      fx.appendChild(d);
+      const ang = Math.random() * Math.PI * 2, dist = 36 + Math.random() * 44;
+      d.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 },
+        { transform: 'translate(' + Math.cos(ang) * dist + 'px,' + Math.sin(ang) * dist + 'px) scale(.2)', opacity: 0 }],
+        { duration: 520 + Math.random() * 200, easing: 'cubic-bezier(.2,.8,.3,1)' }).onfinish = () => d.remove();
+    }
+  }
+  function shake(power) {
+    if (REDUCE || S.fxLite) return;
+    const a = Math.min(2 + power, 9);
+    boardEl.animate([{ transform: 'translate(0,0)' }, { transform: 'translate(' + a + 'px,' + (-a / 2) + 'px)' },
+      { transform: 'translate(' + (-a) + 'px,' + (a / 2) + 'px)' }, { transform: 'translate(0,0)' }], { duration: 220 });
+  }
+
+  // ===== 玩法 =====
+  // 连击：在 CWIN 毫秒内连续合成就累加。等级越高，数字越大、颜色和特效越强
+  const CWIN = 2400;
+  const COMBO_WORDS = { 3: '不错', 5: '太棒了', 8: '疯狂', 12: '势不可挡', 20: '传说' };
+  let combo = 0, lastMerge = 0, comboTimer = 0, comboTotal = 0, cbarAnim = null;
+  const cfx = $('#cfx'), edgeEl = $('#edge');
+  function comboLevel(c) { return c < 2 ? 0 : c < 3 ? 1 : c < 5 ? 2 : c < 8 ? 3 : c < 12 ? 4 : c < 20 ? 5 : 6; }
+  function resetCombo() { clearTimeout(comboTimer); combo = 0; comboTotal = 0; cfx.hidden = true; if (cbarAnim) { cbarAnim.cancel(); cbarAnim = null; } }
+  function endCombo() {
+    if (combo >= 3) {
+      $('#cword').textContent = '共 +' + fmt(comboTotal);
+      $('#cbar').parentNode.style.visibility = 'hidden';
+      comboTimer = setTimeout(resetCombo, 1100);
+    } else resetCombo();
+    combo = 0; comboTotal = 0;
+  }
+  function comboFx(c, to) {
+    const lv = comboLevel(c), col = COMBO_COLORS[lv];
+    cfx.hidden = false; cfx.className = 'cfx lv' + lv;
+    $('#cn').textContent = 'x' + c;
+    $('#cbar').parentNode.style.visibility = '';
+    $('#cword').textContent = COMBO_WORDS[c] || ($('#cword').textContent.indexOf('共') === 0 ? '' : $('#cword').textContent);
+    if (REDUCE) return;
+    $('.cnum').animate([{ transform: 'scale(' + (S.fxLite ? 1.25 : 1.7) + ') rotate(-4deg)' }, { transform: 'scale(.95) rotate(2deg)', offset: .6 }, { transform: 'scale(1) rotate(0)' }], { duration: 300, easing: 'ease-out' });
+    if (cbarAnim) cbarAnim.cancel();
+    cbarAnim = $('#cbar').animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: CWIN, easing: 'linear', fill: 'forwards' });
+    if (!S.fxLite) {
+      boardEl.animate([{ boxShadow: '0 0 ' + (18 + lv * 8) + 'px ' + (2 + lv) + 'px ' + col }, { boxShadow: '0 0 0 0 transparent' }], { duration: 480, easing: 'ease-out' });
+      if (lv >= 2) { edgeEl.style.boxShadow = 'inset 0 0 ' + (28 + lv * 10) + 'px ' + (3 + lv * 2) + 'px ' + col; edgeEl.animate([{ opacity: .35 + lv * .1 }, { opacity: 0 }], { duration: 760, easing: 'ease-out' }); }
+    }
+    if (COMBO_WORDS[c]) { $('#cword').animate([{ transform: 'scale(2.2)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 320, easing: 'ease-out' }); shake(6 + lv * 2); sfx.combo(c); }
+  }
+  function doMerge(from, to) {
+    const t = S.board[from], now = performance.now(); let nt = t + 1;
+    const crit = !!(daily && daily.rule.crit && nt < topTier() && R('crit') < daily.rule.crit); if (crit) nt++;
+    combo = (combo > 0 && now - lastMerge < CWIN) ? combo + 1 : 1; lastMerge = now;
+    S.board[from] = -1; S.board[to] = nt;
+    renderCell(from); renderCell(to);
+    const bonus = incOf(nt) * 2 * combo;
+    S.coins += bonus; if (combo >= 2) comboTotal += bonus;
+    const lv = comboLevel(combo);
+    pop(to); burst(to, nt, combo); ring(to, lv); shake(nt + combo); sfx.merge(nt, combo); vib(combo >= 5 ? [18, 30, 18] : combo >= 2 ? 14 : 9);
+    floatText(to, '+' + fmt(bonus), nt >= 5 || combo >= 5 ? 'big' : ''); if (crit) floatText(to, '暴击！', 'big');
+    clearTimeout(comboTimer);
+    if (combo === 1) { cfx.hidden = true; if (cbarAnim) { cbarAnim.cancel(); cbarAnim = null; } }
+    if (combo >= 2) comboFx(combo, to);
+    comboTimer = setTimeout(endCombo, CWIN);
+    const firstEver = !daily && nt > Math.max(dexBest(), S.best);
+    if (nt > S.best) {
+      S.best = nt;
+      S.reach[nt] = S.playTime; S.since = 0;
+      const reward = incOf(nt) * 20; S.coins += reward;
+      renderDex(); flashDex();
+      sfx.unlock();
+      toast((firstEver ? '图鉴解锁 ' : '升到 ') + TIERS[nt].e + ' ' + TIERS[nt].n + '，用时 ' + fmtTime(S.playTime) + '，奖励 ' + fmt(reward) + ' 金币' + (nt >= topTier() && !daily ? '。已到最高等级，可以重生了' : ''), 2800);
+      if (daily && nt >= topTier()) setTimeout(finishDaily, 900);
+    }
+    renderHud();
+  }
+  function drop(from, to) {
+    if (from === to) return;
+    const a = S.board[from], b = S.board[to];
+    if (b === -1) {
+      S.board[to] = a; S.board[from] = -1; renderCell(from); renderCell(to); sfx.move();
+    } else if (a === b && a < topTier()) {
+      doMerge(from, to);
+    } else {
+      S.board[to] = a; S.board[from] = b; renderCell(from); renderCell(to); sfx.move();
+    }
+  }
+  function tapCreature(i) {
+    const t = S.board[i], gain = incOf(t) * 3;
+    S.coins += gain; pop(i); sfx.tap(); floatText(i, '+' + fmt(gain), 'small'); renderHud();
+  }
+  function summon() {
+    const sp = spawnTier(), helper = sp !== baseTier(), cost = summonCost();
+    const empties = []; for (let i = 0; i < N; i++) if (S.board[i] < 0) empties.push(i);
+    if (S.coins < cost) { toast('金币不够，再等一下'); sfx.bad(); return false; }
+    if (!empties.length) {
+      // 棚子满了：补齐用的动物直接和落单的那只合成，不会让人卡死
+      if (helper) { const partner = S.board.indexOf(sp); S.coins -= cost; sfx.summon(); doMerge(partner, partner); return true; }
+      toast('棚子满了，先合成几只吧'); sfx.bad(); return false;
+    }
+    S.coins -= cost; if (!helper) { S.summons++; S.since++; }
+    const t = (!helper && R('sum') < ((daily && daily.rule.luck) || 0.12)) ? Math.min(sp + 1, topTier()) : sp, i = empties[Math.floor(R('cell') * empties.length)];
+    S.board[i] = t; if (t > S.best) { S.best = t; S.since = 0; S.reach[t] = S.playTime; renderDex(); }
+    renderCell(i); pop(i); sfx.summon();
+    if (!helper && daily && daily.rule.twin) {   // 双胞胎日：同时再出一只相同的
+      const e2 = []; for (let k = 0; k < N; k++) if (S.board[k] < 0) e2.push(k);
+      if (e2.length) { const j = e2[Math.floor(R('cell') * e2.length)]; S.board[j] = t; renderCell(j); pop(j); }
+    }
+    renderHud();
+    return true;
+  }
+  function upgrade() {
+    const c = upCost();
+    if (S.coins < c) { toast('金币不够，再等一下'); sfx.bad(); return; }
+    S.coins -= c; S.up++; sfx.up();
+    toast('本世加成提升到 x' + upMult().toFixed(2));
+    renderHud(); save();
+  }
+
+  // ===== 拖拽 =====
+  let drag = null, overCell = null;
+  function clearOver() { if (overCell) overCell.classList.remove('over'); overCell = null; }
+  function endDrag() {
+    if (!drag) return;
+    if (drag.ghost) drag.ghost.remove();
+    cells[drag.i].classList.remove('drag'); clearOver(); drag = null;
+  }
+  boardEl.addEventListener('pointerdown', e => {
+    const cell = e.target.closest('.cell'); if (!cell) return;
+    const i = +cell.dataset.i; if (S.board[i] < 0) return;
+    ac();
+    drag = { i: i, x: e.clientX, y: e.clientY, moved: false, ghost: null, id: e.pointerId };
+    try { boardEl.setPointerCapture(e.pointerId); } catch (_) {}
+  });
+  boardEl.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 8) {
+      drag.moved = true;
+      const g = document.createElement('div'); g.className = 'ghost'; g.textContent = TIERS[S.board[drag.i]].e;
+      document.body.appendChild(g); drag.ghost = g; cells[drag.i].classList.add('drag');
+    }
+    if (drag.moved) {
+      drag.ghost.style.transform = 'translate(' + (e.clientX - 28) + 'px,' + (e.clientY - 62) + 'px)';
+      const tc = document.elementFromPoint(e.clientX, e.clientY);
+      const c = tc && tc.closest ? tc.closest('.cell') : null;
+      if (c !== overCell) { clearOver(); if (c && +c.dataset.i !== drag.i) { overCell = c; c.classList.add('over'); } }
+    }
+  });
+  boardEl.addEventListener('pointerup', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const d = drag;
+    if (d.moved) {
+      const tc = document.elementFromPoint(e.clientX, e.clientY);
+      const c = tc && tc.closest ? tc.closest('.cell') : null;
+      endDrag();
+      if (c) drop(d.i, +c.dataset.i);
+    } else {
+      endDrag(); tapCreature(d.i);
+    }
+  });
+  boardEl.addEventListener('pointercancel', endDrag);
+
+  // ===== 按钮（长按召唤会连续召唤）=====
+  let holdTimer = 0, holdIv = 0, heldFired = false;
+  function stopHold() { clearTimeout(holdTimer); clearInterval(holdIv); }
+  summonBtn.addEventListener('pointerdown', () => {
+    ac(); heldFired = true; summon();
+    holdTimer = setTimeout(() => { holdIv = setInterval(() => { if (!summon()) stopHold(); }, 130); }, 380);
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => summonBtn.addEventListener(ev, stopHold));
+  summonBtn.addEventListener('click', e => { if (e.detail === 0) summon(); });
+  upgBtn.addEventListener('click', () => { ac(); upgrade(); });
+
+  // ===== 设置 =====
+  const $tg = (id, on, onTxt, offTxt) => { const el = $(id); el.textContent = on ? onTxt : offTxt; el.setAttribute('aria-pressed', String(!!on)); };
+  const setRange = (el, v) => { const n = Math.round(v * 100); el.value = n; el.style.setProperty('--p', n + '%'); };
+  function renderSet() {
+    $tg('#snd', S.sound, '开', '关'); $tg('#musicBtn', S.musicOn, '开', '关');
+    $tg('#fxBtn', !S.fxLite, '炫酷', '简洁'); $tg('#vibBtn', S.vib, '开', '关');
+    setRange($('#musicVol'), S.musicVol); setRange($('#sfxVol'), S.sfxVol);
+    $('#rowMusic').classList.toggle('off', !S.musicOn); $('#rowSnd').classList.toggle('off', !S.sound);
+    renderHomeSnd();
+  }
+  $('#snd').addEventListener('click', () => { S.sound = !S.sound; renderSet(); if (S.sound) { ac(); sfx.tap(); } save(); });
+  $('#musicBtn').addEventListener('click', () => { S.musicOn = !S.musicOn; renderSet(); bgmSync(); save(); });
+  $('#musicVol').addEventListener('input', e => { S.musicVol = +e.target.value / 100; e.target.style.setProperty('--p', e.target.value + '%'); bgmSync(); });
+  $('#musicVol').addEventListener('change', save);
+  $('#sfxVol').addEventListener('input', e => { S.sfxVol = +e.target.value / 100; e.target.style.setProperty('--p', e.target.value + '%'); });
+  $('#sfxVol').addEventListener('change', () => { ac(); sfx.tap(); save(); });
+  $('#fxBtn').addEventListener('click', () => { S.fxLite = !S.fxLite; renderSet(); save(); sfx.tap(); });
+  $('#vibBtn').addEventListener('click', () => { S.vib = !S.vib; renderSet(); save(); vib(30); });
+
+  const setModal = $('#setModal');
+  function openSettings() {
+    renderSet();
+    const inHome = !homeEl.hidden;
+    $('#homeBtn').hidden = inHome; $('#homeBtn').querySelector('.t').textContent = daily ? '放弃挑战' : '返回首页';
+    $('#setOk').style.gridColumn = inHome ? '1 / -1' : '';
+    setModal.hidden = false; $('#setOk').focus();
+  }
+  function closeSettings() { setModal.hidden = true; }
+  $('#settingsBtn').addEventListener('click', openSettings);
+  $('#setOk').addEventListener('click', closeSettings);
+  setModal.addEventListener('pointerdown', e => { if (e.target === setModal) closeSettings(); });
+
+  // 二次确认弹窗：重新开始、返回首页、放弃挑战都先问一句
+  const cfModal = $('#cfModal'); let cfYesFn = null;
+  function confirmBox(o, yes) {
+    $('#cfTitle').textContent = o.title; $('#cfText').textContent = o.text; $('#cfYesT').textContent = o.yes;
+    $('#cfYes').classList.toggle('danger', !!o.danger); $('#cfYes').classList.toggle('main', !o.danger);
+    cfYesFn = yes; cfModal.hidden = false; $('#cfNo').focus();
+  }
+  function closeConfirm() { cfModal.hidden = true; cfYesFn = null; }
+  $('#cfNo').addEventListener('click', closeConfirm);
+  $('#cfYes').addEventListener('click', () => { const f = cfYesFn; closeConfirm(); if (f) f(); });
+  cfModal.addEventListener('pointerdown', e => { if (e.target === cfModal) closeConfirm(); });
+  $('#homeBtn').addEventListener('click', () => {
+    if (daily) confirmBox({ title: '放弃挑战？', text: '这次机会不会返回，成绩也不会计入。', yes: '放弃', danger: true }, () => { closeSettings(); exitDaily(); });
+    else confirmBox({ title: '返回首页？', text: '进度已经自动保存。', yes: '返回' }, () => { closeSettings(); resetCombo(); save(); renderHome(); homeEl.hidden = false; });
+  });
+  $('#restartBtn').addEventListener('click', () => confirmBox({ title: '重新开始？', text: '进度、★ 和图鉴都会清空，无法恢复。', yes: '确定清空', danger: true }, () => {
+    boostUntil = 0; resetCombo(); const set = pickSet(S); S = Object.assign(fresh(), set); applyWorld(); renderAll(); renderSet(); save(); renderHome(); toast('已重新开始');
+  }));
+
+  // ===== 主循环 =====
+  let last = performance.now();
+  setInterval(() => {
+    const now = performance.now(), dt = Math.min((now - last) / 1000, 1); last = now;
+    if (!homeEl.hidden) return;
+    if (daily && (!daily.running || modalOpen())) { renderHud(); return; }   // 挑战倒计时、弹窗打开时计时暂停
+    S.coins += income() * dt; S.playTime += dt; renderHud();
+    if (daily && daily.running && S.playTime >= daily.dur) finishDaily();
+  }, 100);
+  setInterval(() => {
+    if (document.hidden || !homeEl.hidden || (daily && !daily.running)) return;
+    const occ = []; for (let i = 0; i < N; i++) if (S.board[i] >= 0) occ.push(i);
+    if (!occ.length) return;
+    const i = occ[Math.floor(Math.random() * occ.length)];
+    floatText(i, '+' + fmt(incOf(S.board[i])), 'small');
+  }, 900);
+  setInterval(save, 3000);
+
+  // ===== 空投礼盒 =====
+  // 礼盒的种类在出现时就定好，用颜色和图标让人一眼认出：金色=金币，绿色=双倍，紫色=动物，发光的是大礼包（3 倍）
+  const wrap = $('#stage');
+  const sky = document.createElement('div'); sky.className = 'sky'; wrap.appendChild(sky);
+  const GIFT_W = 92, GIFT_H = 148;
+  let giftEl = null, nextGift = performance.now() + 15000;
+  const scheduleGift = () => {
+    if (daily) { const ge = daily.rule.giftEvery; daily.nextGift = S.playTime + (ge ? ge[0] + R('giftt') * (ge[1] - ge[0]) : 28 + R('giftt') * 14); return; }
+    nextGift = performance.now() + 35000 + Math.random() * 20000;
+  };
+  function clearGift() { if (giftEl) { giftEl.remove(); giftEl = null; } }
+
+  // 气球载物：气球颜色 + 下面挂的东西 + 文字标签，三重区分。金币=铜钱，双倍=闪电，动物=泡泡里的动物
+  const BAL = { coin: ['#ffe27a', '#f0a000'], boost: ['#9af2bd', '#169a55'], animal: ['#e0c4ff', '#7a47cc'] };
+  const SPARK = 'M0 -6 L1.6 -1.6 L6 0 L1.6 1.6 L0 6 L-1.6 1.6 L-6 0 L-1.6 -1.6Z';
+  function giftSVG(g) {
+    const c = BAL[g.kind], u = 'g' + Math.random().toString(36).slice(2, 7);
+    let pay = '';
+    if (g.kind === 'coin') {
+      pay = '<circle r="17" fill="url(#' + u + 'p)" stroke="#9a6200" stroke-width="2"/><circle r="12.5" fill="none" stroke="#fff3b0" stroke-width="1.6" opacity=".85"/>'
+        + '<rect x="-4.5" y="-4.5" width="9" height="9" rx="1.5" fill="#8a5a00"/><path d="M-11 -6 A12.5 12.5 0 0 1 -4 -11.5" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".9"/>';
+    } else if (g.kind === 'boost') {
+      pay = '<rect x="-17" y="-17" width="34" height="34" rx="11" fill="#17a85c" stroke="#0b6b3a" stroke-width="2"/><rect x="-13" y="-14" width="26" height="9" rx="4.5" fill="#fff" opacity=".18"/>'
+        + '<path d="M4 -13 L-9 3 L-1 3 L-4 13 L10 -4 L2 -4 Z" fill="#ffe14d" stroke="#8a6a00" stroke-width="1.4" stroke-linejoin="round"/>';
+    } else {
+      pay = '<circle r="18" fill="#fff" stroke="#7a47cc" stroke-width="2.6"/><circle r="18" fill="none" stroke="#c79bff" stroke-width="1.4" stroke-dasharray="3 3" transform="scale(.8)"/>'
+        + '<text text-anchor="middle" dominant-baseline="central" font-size="22" y="1">' + g.icon + '</text>';
+    }
+    let spark = '';
+    if (g.big) spark = [[10, 16, 1.1], [70, 38, .9], [13, 72, .8], [69, 78, 1]].map(p => '<path d="' + SPARK + '" transform="translate(' + p[0] + ' ' + p[1] + ') scale(' + p[2] + ')" fill="#fff6c0"/>').join('');
+    return '<svg class="art" viewBox="0 0 80 112" aria-hidden="true"><defs>'
+      + '<radialGradient id="' + u + 'b" cx=".35" cy=".28" r=".85"><stop offset="0" stop-color="' + c[0] + '"/><stop offset="1" stop-color="' + c[1] + '"/></radialGradient>'
+      + '<radialGradient id="' + u + 'p" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#fff0a0"/><stop offset="1" stop-color="#e29a00"/></radialGradient></defs>'
+      + '<path d="M40 61 Q35 67 40 72 T40 77" stroke="#d7e8ea" stroke-width="1.6" fill="none"/>'
+      + '<path d="M40 76 L26 87 M40 76 L54 87" stroke="#d7e8ea" stroke-width="1.3" fill="none"/>'
+      + '<ellipse cx="40" cy="30" rx="26" ry="30" fill="url(#' + u + 'b)"/>'
+      + '<path d="M40 0.5 C27 14 27 47 40 60 M40 0.5 C53 14 53 47 40 60" stroke="rgba(0,0,0,.13)" stroke-width="1.2" fill="none"/>'
+      + '<path d="M36 58 L40 64 L44 58 Z" fill="' + c[1] + '"/>'
+      + '<ellipse cx="29" cy="18" rx="5.5" ry="9" fill="#fff" opacity=".5" transform="rotate(-24 29 18)"/>'
+      + '<g transform="translate(40 94)">' + pay + '</g>' + spark + '</svg>';
+  }
+  function rollGift() {
+    if (daily) {   // 挑战里只空投动物：真正能帮上合成的东西
+      const bigD = R('gift') < 0.15, td = Math.max(0, S.best - (bigD ? 1 : 2));
+      return { kind: 'animal', big: bigD, tier: td, icon: TIERS[td].e, tag: TIERS[td].n };
+    }
+    const r = Math.random(), big = Math.random() < 0.1;
+    if (r < 0.4) return { kind: 'coin', big: big, icon: '💰', tag: big ? '大笔金币' : '金币' };
+    if (r < 0.7) return { kind: 'boost', big: big, icon: '⚡', tag: big ? '双倍 60秒' : '双倍 30秒' };
+    const t = Math.max(0, S.best - (big ? 1 : 2));
+    return { kind: 'animal', big: big, tier: t, icon: TIERS[t].e, tag: TIERS[t].n };
+  }
+  function claimGift() {
+    if (!giftEl) return;
+    const g = giftEl._g, el = giftEl; giftEl = null; el.remove(); scheduleGift();
+    const base = Math.max(income() * 60, summonCost() * 2) * (g.big ? 3 : 1), lead = g.big ? '大礼包：' : '空投：';
+    let msg = '';
+    if (g.kind === 'coin') {
+      S.coins += base; msg = lead + fmt(base) + ' 金币';
+    } else if (g.kind === 'boost') {
+      const sec = g.big ? 60 : 30;
+      boostUntil = Math.max(performance.now(), boostUntil) + sec * 1000; msg = lead + sec + ' 秒收益翻倍';
+    } else {
+      const empties = []; for (let i = 0; i < N; i++) if (S.board[i] < 0) empties.push(i);
+      if (!empties.length) {
+        S.coins += base; msg = lead + '棚子满了，改发 ' + fmt(base) + ' 金币';
+      } else {
+        const i = empties[Math.floor(R('cell') * empties.length)];
+        S.board[i] = g.tier; renderCell(i); pop(i); burst(i, g.tier);
+        msg = lead + TIERS[g.tier].e + ' ' + TIERS[g.tier].n;
+      }
+    }
+    sfx.unlock(); vib(20); toast(msg, 2200); renderHud();
+  }
+  function spawnGift() {
+    const g = rollGift();
+    const el = document.createElement('button');
+    el.type = 'button'; el.className = 'gift k-' + g.kind + (g.big ? ' big' : '');
+    el.innerHTML = giftSVG(g) + '<span class="tag"></span>';
+    el.querySelector('.tag').textContent = g.tag;
+    el.setAttribute('aria-label', '空投：' + g.tag + '，点击领取');
+    el._g = g; sky.appendChild(el); giftEl = el;
+    el.addEventListener('pointerdown', e => { e.stopPropagation(); ac(); claimGift(); });
+    el.addEventListener('click', e => { if (e.detail === 0) claimGift(); });
+    const expire = () => { if (giftEl === el) { giftEl = null; scheduleGift(); } el.remove(); };
+    const W = wrap.clientWidth, H = wrap.clientHeight;
+    if (REDUCE) {
+      el.style.left = Math.max(0, Math.random() * (W - GIFT_W)) + 'px';
+      el.style.top = Math.max(0, Math.random() * (H - GIFT_H)) + 'px';
+      setTimeout(expire, 8000); return;
+    }
+    // 四条路线随机：右到左、左到右、上到下、下到上；位置和摆动幅度也随机
+    const route = Math.floor(Math.random() * 4), dur = 7000 + Math.random() * 2500;
+    const horizontal = route < 2;
+    const lane = 4 + Math.random() * Math.max(0, (horizontal ? H - GIFT_H : W - GIFT_W) - 8);
+    const amp = 12 + Math.random() * 22, phase = Math.random() * Math.PI * 2, steps = 10, frames = [];
+    for (let k = 0; k <= steps; k++) {
+      const u = k / steps, sway = Math.sin(phase + u * Math.PI * 3) * amp;
+      let x, y;
+      if (route === 0) { x = W + 10 - u * (W + GIFT_W + 20); y = lane + sway; }
+      else if (route === 1) { x = -GIFT_W - 10 + u * (W + GIFT_W + 20); y = lane + sway; }
+      else if (route === 2) { x = lane + sway; y = -GIFT_H - 10 + u * (H + GIFT_H + 20); }
+      else { x = lane + sway; y = H + 10 - u * (H + GIFT_H + 20); }
+      frames.push({ transform: 'translate(' + x + 'px,' + y + 'px)' });
+    }
+    el.animate(frames, { duration: dur, easing: 'linear' }).onfinish = expire;
+  }
+  setInterval(() => {
+    if (document.hidden || giftEl || !homeEl.hidden) return;
+    if (daily) { if (daily.running && !modalOpen() && S.playTime >= daily.nextGift) spawnGift(); return; }
+    if (performance.now() >= nextGift) spawnGift();
+  }, 500);
+
+  // ===== 离线收益 =====
+  // 在首页时先记成“待领取”，弹窗点了领取才入账（存档里保存，中途关掉下次还在）
+  const olModal = $('#olModal');
+  function showOffline() { if ((S.pendingOffline || 0) < 1) return; const a = '+' + fmt(S.pendingOffline); $('#olAmt').innerHTML = a + '<small>金币</small>'; $('#olAmt').style.fontSize = a.length > 8 ? '40px' : a.length > 6 ? '50px' : ''; olModal.hidden = false; $('#olOk').focus(); }
+  $('#olOk').addEventListener('click', () => {
+    const amt = S.pendingOffline || 0; S.pendingOffline = 0; S.coins += amt; olModal.hidden = true; ac(); sfx.unlock(); vib(20); renderHud(); save();
+    toast('已领取 ' + fmt(amt) + ' 金币', 1800);
+  });
+  function giveOffline(sec) {
+    if (sec < 20) return;
+    const earn = income() * Math.min(sec, 7200) * 0.5;
+    if (earn < 1) return;
+    if (homeEl.hidden) { S.coins += earn; renderHud(); toast('你不在的时候赚了 ' + fmt(earn) + ' 金币', 3000); }
+    else { S.pendingOffline = (S.pendingOffline || 0) + earn; save(); showOffline(); }
+  }
+  let hiddenAt = 0;
+  document.addEventListener('visibilitychange', () => {
+    bgmSync();
+    if (document.hidden) { hiddenAt = Date.now(); save(); }
+    else if (hiddenAt) { if (!daily) giveOffline((Date.now() - hiddenAt) / 1000); hiddenAt = 0; last = performance.now(); }
+  });
+  window.addEventListener('pagehide', save);
+  const modalOpen = () => document.querySelector('.modal:not([hidden])') !== null;
+
+  // ===== 首页 =====
+  function buildHomeBg() {
+    const R = (a, b) => a + Math.random() * (b - a); let h = '';
+    for (let i = 0; i < 26; i++) h += '<i class="star" style="left:' + R(2, 98).toFixed(1) + '%;top:' + R(1, 50).toFixed(1) + '%;--s:' + R(1.2, 3).toFixed(1) + 'px;animation-delay:-' + R(0, 4).toFixed(1) + 's;animation-duration:' + R(2.2, 4.5).toFixed(1) + 's"></i>';
+    ['🥚', '🐣', '🐥', '🥚', '🐤', '🐣', '🥚', '🐥'].forEach((e, i) => { h += '<b class="drift" style="left:' + (6 + i * 12 + R(-3, 3)).toFixed(1) + '%;font-size:' + R(20, 34).toFixed(0) + 'px;animation-duration:' + R(16, 26).toFixed(1) + 's;animation-delay:-' + R(0, 20).toFixed(1) + 's">' + e + '</b>'; });
+    for (let i = 0; i < 14; i++) h += '<u class="fly" style="left:' + R(4, 96).toFixed(1) + '%;top:' + R(60, 92).toFixed(1) + '%;animation-duration:' + R(5, 10).toFixed(1) + 's;animation-delay:-' + R(0, 8).toFixed(1) + 's"></u>';
+    $('#bubbles').innerHTML = h;
+  }
+  const hasProgress = () => S.summons > 0 || S.best > 0 || S.up > 0 || S.rebirths > 0 || S.playTime > 5;
+  function renderHome() { try { renderHomeInner(); } catch (e) { $('#homeCard').textContent = ''; } }
+  function renderHomeInner() {
+    const known = Math.min(Math.max(dexBest(), S.best), topTier()), end = Math.max(4, known), start = end - 4, prog = hasProgress();
+    let h = '';
+    for (let t = start; t <= end; t++) h += '<span style="--k:' + (t - start) + '" class="' + (t <= Math.max(known, 2) ? '' : 'sil') + '">' + TIERS[t].e + '</span>';
+    $('#herd').innerHTML = h;
+    const card = $('#homeCard');
+    if (prog) {
+      card.className = 'home-info';
+      card.innerHTML = '<span>第 ' + (S.rebirths + 1) + ' 世 · ' + world().icon + world().name + '</span><span><b>★' + S.stars + '</b> · 永久 x' + starMult().toFixed(2) + '</span><span>图鉴 ' + (known + 1) + '/' + tierCap() + '</span>';
+    } else {
+      card.className = 'home-card';
+      card.innerHTML = '<ol><li>点「召唤」得到动物</li><li>相同的两只拖到一起，合成更大的</li><li>点一下动物收金币，空闲时也会自己赚</li></ol>';
+    }
+    $('#startTxt').textContent = prog ? '继续游戏' : '开始游戏';
+    $('#restartBtn').hidden = !prog;
+    renderDailyBtn();
+  }
+  let firstRun = !savedAt;
+  $('#startBtn').addEventListener('click', () => {
+    ac(); sfx.summon(); homeEl.hidden = true; last = performance.now(); nextGift = Math.max(nextGift, performance.now() + 15000);
+    if (pendingBoost > 0) { boostUntil = performance.now() + pendingBoost * 1000; toast('每日挑战奖励生效：收益翻倍 ' + pendingBoost + ' 秒', 3000); pendingBoost = 0; }
+    else if (firstRun && !hasProgress()) toast('相同的两只拖到一起合成，点一下动物收金币', 4500);
+    firstRun = false;
+  });
+  $('#homeSet').addEventListener('click', () => { ac(); openSettings(); });
+  const homeSnd = $('#homeSnd');
+  function renderHomeSnd() { homeSnd.textContent = (S.sound || S.musicOn) ? '🔊' : '🔇'; }
+  homeSnd.addEventListener('click', () => { const on = !(S.sound || S.musicOn); S.sound = on; S.musicOn = on; renderSet(); renderHomeSnd(); bgmSync(); save(); if (on) { ac(); sfx.tap(); } });
+
+  // ===== 每日挑战 =====
+  const fmtRes = r => r.emoji + ' Lv' + (r.tier + 1) + ' · ' + fmtTime(r.t);
+  function renderDailyBtn() {
+    loadD();
+    const left = MAX_TRIES - D.tries;
+    $('#dailySub').textContent = (left > 0 ? '今日剩余 ' + left + ' 次' : '今日已打完') + (D.best ? ' · 最佳 ' + fmtRes(D.best) : '');
+    $('#dailyDot').hidden = !(left > 0 && !D.best);
+  }
+  const dyModal = $('#dyModal');
+  function openDailyIntro() {
+    loadD();
+    const info = dayInfo(D.day), rule = DAILY_RULES[info.wd], left = MAX_TRIES - D.tries, dur = rule.dur || 180;
+    const wk = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][info.wd];
+    $('#dyTitle').textContent = '每日挑战';
+    $('#dyRule').innerHTML = '<span class="ri">' + rule.icon + '</span><div><b>今日规则：' + rule.name + '</b><small>' + rule.desc + '</small></div>';
+    const refresh = Math.floor((864e5 - ((Date.now() + 8 * 3600e3) % 864e5)) / 60000);
+    const lines = [['日期', D.day.slice(5).replace('-', '月') + '日 ' + wk], ['挑战时长', Math.round(dur / 60) + ' 分钟'], ['今日剩余次数', left + ' / ' + MAX_TRIES], ['今日最佳', D.best ? fmtRes(D.best) : '还没有成绩'], ['历史最佳', D.ever ? fmtRes(D.ever) + '（' + D.ever.day.slice(5) + '）' : '—']];
+    $('#dyLines').innerHTML = lines.map(l => '<li><span>' + l[0] + '</span><span>' + l[1] + '</span></li>').join('');
+    $('#dyNote').textContent = '限时冲刺：时间内合成得越高越好，同级比谁先到。同一天所有人的运气序列相同，每天 ' + MAX_TRIES + ' 次取最高分。' + (D.claimed ? '' : '今天第一次打完有奖励。') + (left > 0 ? '' : '明天再来（约 ' + Math.floor(refresh / 60) + ' 小时 ' + (refresh % 60) + ' 分后刷新）。');
+    $('#dyGo').disabled = left <= 0; $('#dyGoT').textContent = left > 0 ? '开始挑战' : '明天再来';
+    dyModal.hidden = false; (left > 0 ? $('#dyGo') : $('#dyBack')).focus();
+  }
+  function closeDailyIntro() { dyModal.hidden = true; }
+  $('#dailyBtn').addEventListener('click', () => { ac(); openDailyIntro(); });
+  $('#dyBack').addEventListener('click', closeDailyIntro);
+  dyModal.addEventListener('pointerdown', e => { if (e.target === dyModal) closeDailyIntro(); });
+  $('#dyGo').addEventListener('click', () => { ac(); startDaily(); });
+
+  function runCountdown(done) {
+    const el = $('#cd'), seq = ['3', '2', '1', '开始！']; let i = 0; el.hidden = false;
+    const step = () => {
+      if (!daily) { el.hidden = true; return; }
+      el.textContent = seq[i]; el.classList.remove('go'); void el.offsetWidth; el.classList.add('go'); sfx.tap(); i++;
+      if (i < seq.length) setTimeout(step, 700); else setTimeout(() => { el.hidden = true; if (daily) done(); }, 600);
+    };
+    step();
+  }
+  function startDaily() {
+    loadD(); if (D.tries >= MAX_TRIES) return;
+    D.tries++; saveD();
+    if (!mainS) { syncDex(); save(); mainS = S; }
+    const info = dayInfo(D.day), rule = DAILY_RULES[info.wd];
+    clearGift(); closeDailyIntro(); $('#dyResult').hidden = true;
+    S = Object.assign(fresh(), pickSet(mainS), { coins: 100, rebirths: info.num % WORLDS.length });
+    if (rule.start) { [0, 1, 2, 3, 4, 7, 8, 9].forEach(i => { S.board[i] = rule.start - 1; }); S.best = rule.start - 1; S.reach[S.best] = 0; }
+    daily = { key: D.day, rule: rule, streams: {}, running: false, finished: false, dur: rule.dur || 180, nextGift: 0 };
+    scheduleGift(); daily.nextGift = Math.min(daily.nextGift, rule.giftEvery ? 8 : 20);
+    boostUntil = 0; resetCombo(); applyWorld(); renderAll(); renderSet();
+    homeEl.hidden = true;
+    runCountdown(() => { daily.running = true; last = performance.now(); });
+  }
+  function persistMain() { try { mainS.savedAt = Date.now(); localStorage.setItem(KEY, JSON.stringify(mainS)); } catch (e) {} }
+  function finishDaily() {
+    if (!daily || daily.finished) return;
+    daily.finished = true; daily.running = false;
+    const best = S.best, tReach = Math.min(daily.dur, S.reach[best] || 0), score = best * 1000 + Math.round(daily.dur - tReach);
+    const prevDay = D.best ? D.best.score : -1, prevEver = D.ever ? D.ever.score : -1;
+    const res = { score: score, tier: best, t: Math.round(tReach), emoji: TIERS[best].e, name: TIERS[best].n };
+    const newDay = score > prevDay, newEver = score > prevEver;
+    if (newDay) D.best = res; if (newEver) D.ever = Object.assign({ day: D.day }, res);
+    let rewardTxt = '';
+    if (!D.claimed) {   // 今天第一次打完：奖励直接发到主线存档
+      D.claimed = true;
+      const min = Math.min(20, 5 + best), saved = S; S = mainS;
+      const amt = Math.max(income() * 60 * min, summonCost() * 5); S = saved;
+      mainS.coins += amt; persistMain(); pendingBoost = 60;
+      rewardTxt = '首次完成奖励：+' + fmt(amt) + ' 金币（约 ' + min + ' 分钟收益），回到主线后再送 60 秒双倍。';
+    } else rewardTxt = '今天的首次奖励已经领过了，继续刷新纪录吧。';
+    saveD(); sfx.unlock(); vib([20, 40, 20]);
+    $('#dyBig').innerHTML = res.emoji + (newDay ? '<em>今日新高</em>' : '') + '<small>Lv' + (best + 1) + ' ' + res.name + ' · 用时 ' + fmtTime(res.t) + '</small>';
+    $('#dyResLines').innerHTML = [['本次得分', score], ['今日最佳', D.best ? fmtRes(D.best) : '—'], ['历史最佳', D.ever ? fmtRes(D.ever) : '—']].map(l => '<li><span>' + l[0] + '</span><span>' + l[1] + '</span></li>').join('');
+    $('#dyReward').textContent = rewardTxt;
+    const left = MAX_TRIES - D.tries; $('#dyAgain').disabled = left <= 0; $('#dyAgainT').textContent = left > 0 ? '再来一次' : '次数用完'; $('#dyAgainS').textContent = left > 0 ? '今日还剩 ' + left + ' 次' : '明天再来';
+    $('#dyResult').hidden = false; $('#dyExit').focus();
+  }
+  $('#dyAgain').addEventListener('click', () => { ac(); startDaily(); });
+  $('#dyExit').addEventListener('click', () => { $('#dyResult').hidden = true; exitDaily(); });
+  function exitDaily() {
+    if (!mainS) { daily = null; return; }
+    Object.assign(mainS, pickSet(S));
+    S = mainS; mainS = null; daily = null;
+    clearGift(); boostUntil = 0; resetCombo(); $('#cd').hidden = true;
+    applyWorld(); renderAll(); renderSet(); save(); renderHome(); homeEl.hidden = false;
+  }
+
+  applyWorld(); renderAll(); renderSet(); buildHomeBg(); renderHomeSnd();
+  if (savedAt) giveOffline((Date.now() - savedAt) / 1000);
+  renderHome();
+  if ((S.pendingOffline || 0) >= 1) showOffline();
+})();
+</script>
+
+</body></html>
